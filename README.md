@@ -19,15 +19,15 @@ To ask questions, provide feedback or otherwise communicate with the team, join 
 
 ## Documentation
 
-### The Dialect Classes
+### Dialect Classes
 
-The `Dialect` classes are the classes to instanciate to be able to generate SQL query. The available `Dialect` classes are:
+`Dialect` classes are used to generate SQL queries. The available `Dialect` classes are:
 
-* `sql\dialect\MySql`
-* `sql\dialect\PostgreSql`
-* `sql\Dialect` (the generic one)
+* `sql\dialect\MySql`: to take befefits of MySql features
+* `sql\dialect\PostgreSql`: to take befefits of PostgreSql features
+* `sql\Dialect`: the generic SQL one
 
-Let's start with a `MySql` dialect:
+Let's start by instantiating a `MySql` dialect class:
 
 ```php
 use sql\dialect\MySql;
@@ -35,7 +35,7 @@ use sql\dialect\MySql;
 $dialect = new MySql();
 ```
 
-Once instanciated, creating query instances are done by using the dialect's `statement()` factory method:
+Once instantiated, it's possible to use the dialect`s `->statement()` method to create query instances like in the following:
 
 ```php
 <?php
@@ -49,7 +49,7 @@ $dropTable = $dialect->statement('drop table');
 ?>
 ```
 
-Then once your query is configured, `toString()/__toString()` will generate the corresponding SQL:
+Then to generate the corresponding SQL, we need to use either `toString()` or `__toString()`:
 
 ```php
 $select->from('mytable');
@@ -57,25 +57,25 @@ echo $select->toString(); // SELECT * FROM "mytable"
 echo (string) $select;    // SELECT * FROM "mytable"
 ```
 
-Note: when a query is not correctly configured it can throws exceptions. Due to some PHP limitation throwing an exception from `__toString()` generates the following fatal error `Fatal error: Method a::__toString() must not throw an exception`. To have more user-friendly error message, it's recommended to use `toString()` instead.
+Note: when a query is not correctly configured it can throws exceptions. Due to some PHP limitations throwing an exception from `__toString()` generates a fatal error. So to keep error messages more user-friendly, it's recommended to always use `toString()` instead of the magic method.
 
-The generated SQL are independent of any particular database connection library so you can use [PDO](http://php.net/pdo) or the database connection or your choice to execute the query.
+Since the SQL generated is independent of any particular database connection library so you can use [PDO](http://php.net/pdo), or any other database connection library of your choice, to execute the query.
 
 ### Quoting
 
-By default string values are quoted by the library, however some database connections provide their own [built-in quoting method](http://php.net/manual/en/pdo.quote.php). When available this method should be used instead of the build-in one. To do so, you need to inject the quote handler to your dialect instance like in the following:
+By default string values are automatically quoted, however some database connections provide their own [built-in quoting method](http://php.net/manual/en/pdo.quote.php). If you are not using PDO you will probably want to override the default quoting handler. To do so, you'ss need to inject your handler to the dialect instance like in the following:
 
 ```php
 use PDO;
 use sql\dialect\PostgreSql;
 
-$connection = new PDO($dsn, $user, $password);
+$connection = new DBConnection($dsn, $user, $password);
 $dialect = new PostgreSql(['quoter' => function($string) use ($connection){
-    return $connection->quote($string);
+    return $connection->quoteTheString($string);
 }]);
 ```
 
-Note: to avoid SQL injections, table/field names are escaped and string values are quoted by default.
+Note: to avoid SQL injections, table/field names are also escaped by default.
 
 ### SELECT
 
@@ -86,13 +86,13 @@ Example of `SELECT` query:
 $select
     ->distinct()                    // SELECT DISTINCT
     ->fields([
-        'id',                       // simple field name
-        'fielname' => 'alias'       // field name aliasing
+        'id',                       // a field name
+        'fielname' => 'alias'       // a aliased field name
     ])
     ->from('table')                 // FROM
     ->join(                         // JOIN
-        'other',                    // other table name
-        ['other.table_id' => [      // join condition, (more information on
+        'other',                    // a table name
+        ['other.table_id' => [      // join conditions, (more information on
             ':name' => 'table.id'   // [':name' => ...] in the Prefix Notation section)
         ]],
         'LEFT'                      // type of join
@@ -113,13 +113,13 @@ $select
 
 #### Prefix Notation (or polish notation)
 
-To be able to write complex SQL queries, the prefix notation has been choosed here instead of relying on an exhaustive API with many methods (e.g. `orWhere`, `andWhere`, `whereNull()`, etc.) which generally ends up to missing methods anyway.
+To be able to write complex SQL queries, the prefix notation has been choosed instead of relying on an exhaustive API with a lot of methods (i.e. methods like `orWhere`, `andWhere`, `whereNull()`, etc.) which generally ends up to have missing methods anyway.
 
-Infix notation is the notation commonly used in arithmetical. It's characterized by the placement of operators between operands (e.g. `3 + 4`). With the prefix notation, the operator is placed to the left of their operands (e.g. `+ 3 4`).
+Infix notation is the most populare arithmetical notation. It's characterized by the placement of operators **between** operands (e.g. `3 + 4`). With the prefix notation, the operator is placed to the **left** of their operands (e.g. `+ 3 4`).
 
-For a developper this notation is pretty intuitive since it's very similar to how functions are defined. `+` is in a way the function name and `3` and `4` are the parameters.
+For a developper this notation is pretty intuitive since it's very similar to how functions are defined. `+` is in a way the function name and `3` and `4` are the arguments.
 
-Example or queries using prefix notation:
+So to be able to build complex queries without being limitated by the API, this library allows prefix notation like in the following:
 
 ```php
 $select->fields(['*' => [
@@ -133,21 +133,28 @@ $select->fields(['*' => [
 echo $select->toString();            // SELECT (1 + 2) * 3
 ```
 
-Note: named operators need to be prefixed by a colon `:` (e.g `:or`, `:and`, `:like`, ':in', etc.). However mathematical symbol like `+`, `-`, `<=`, etc. doesn't requires colon.
+You probably had to read the example twice. But if it looks quite confusing at a first glance, prefix notation has a couple of advantages:*
+* it's can represent any kind of expression by definition.
+* it's not SQL dedicated and can be used in a higher level of abstraction.
+* it's simpler to deal with programmatically than parsing/unparsing SQL strings, since it's a mathematical abstraction.
 
-If more complex than the classic SQL notation this prefix notation has two main advantages:
-* is not SQL dedicated and can be used in a higher level of abstraction.
-* is simpler to deal with programmatically than parsing/unparsing SQL strings.
+Note: all named operators are prefixed by a colon `:` (e.g `:or`, `:and`, `:like`, ':in', etc.). However mathematical symbol like `+`, `-`, `<=`, etc. doesn't requires a colon.
 
 #### Formatters
 
-Formatters are used to escapes table/field names & quotes string values out of the box. The available built-in formatters are:
+Formatters are used to deal with the three different types of values present in SQL:
 
-* `':name'`: it escapes a table/field names.
-* `':value'`: it quotes string values.
-* `':plain'`: it doesn't do anything (Warning: `':plain'` is subject to SQL injection)
+1. the table/field names which need to be escaped.
+2. the values which needs to be quotes like string values.
+3. the plain expressions.
 
-Most of queries relies on the following kind of condition: `field = value`, so you can write your select conditions like the following:
+So, to be able to choose the formatting, the following formatters has been introduced:
+
+* `':name'`: escapes a table/field names.
+* `':value'`: quotes string values.
+* `':plain'`: doesn't do anything (warning: `':plain'` is subject to SQL injection)
+
+Since most of queries relies on the following kind of condition: `field = value`, you don't need to specify the formatting everywhere. For example you can simply write your select conditions like the following:
 
 ```php
 $select->from('table')->where([
@@ -158,7 +165,7 @@ echo $select->toString();
 // SELECT * FROM `table` WHERE `field1` = 'value1' AND `field2` = 'value2'
 ```
 
-However the prefix notation can leverage this basic syntax to perform some more complex query. For example the `['field' => 'value']` condition can be rewrited as:
+which can be rewrited as:
 
 ```php
 $select->from('table')->where([
@@ -166,14 +173,15 @@ $select->from('table')->where([
 ]);
 ```
 
-Which can also be rewrited as:
+which can also be rewrited as:
+
 ```php
 $select->from('table')->where([
     ['=' => [[':name' => 'field'], [':value' => 'value']]]
 ]);
 ```
 
-Most of the time the `['field' => 'value']` syntax will be enough to build your conditions from a higer level of abstraction. But if you wan't to make a `field1 = field2` condition where both part must be escaped, the prefix notation can be used to nail it down:
+So most of the time the `['field' => 'value']` syntax will fit prefectly well to your need. However if you wan't to make a `field1 = field2` condition where both part must be escaped, the prefix notation can save your day:
 
 ```php
 $select->from('table')->where([
@@ -227,7 +235,7 @@ Bellow an exhaustive list of common operators which work for both MySQL and Post
 * `':xor'`
 * `'()'`
 `
-It's also possible to use some "free" operators. All used operators which are not present in the list above will be considered as SQL functions. So `:concat`, `:sum`, `:min`, `:max`, etc. will be generated as `FUNCTION(...)`.
+It's also possible to use some "free" operators. All used operators which are not present in the list above will be considered as SQL functions like `:concat`, `:sum`, `:min`, `:max`, etc. and will be generated as `FUNCTION(...)`.
 
 #### MySQL Dedicated Operators
 
@@ -269,7 +277,7 @@ It's also possible to use some "free" operators. All used operators which are no
 
 #### Custom Dedicated Operators
 
-It's also possible to create your own operator as well as the handler to build it.
+It's also possible to create your own operators with handlers to build them.
 
 Example:
 
@@ -291,9 +299,13 @@ $select->fields(['{}' => [1]]); // SELECT {1}
 ]]);
 ```
 
+The example above allows to use `'{}'` as operator and provides the following formatting `'{%s}'`.
+
 #### Subqueries
 
-To use a subquery inside another query or doing some algebraic operations on queries, you just need to mix them together:
+To use a subquery inside another query or doing some algebraic operations on queries (i.e. `UNION`, `INTERSECT`, etc.), you can simply mix them together:
+
+Example of `JOIN` on a subquery:
 
 ```php
 $subquery = $dialect->statement('select')
@@ -305,7 +317,7 @@ echo $select->toString();
 // SELECT * FROM "table" LEFT JOIN (SELECT * FROM "table2") AS "t2"
 ```
 
-You can also perform `UNION` query:
+Example of `UNION` query:
 
 ```php
 $select1 = $dialect->statement('select')->from('table1');
@@ -449,7 +461,7 @@ echo $this->create->toString();
 
 #### Abstract types
 
-Databases uses different naming conventions for types which can be quite missleading. So to be the most generic possible, columns definition can be done using some abstract `'type'` definitions. Out of the box the following types are supported:
+Databases uses different naming conventions for types which can be missleading. To be the most generic possible, columns definition can be done using some abstract `'type'` definitions. Out of the box the following types are supported:
 
 * `'id'`: foreign key ID
 * `'serial'`: autoincremented serial primary key
@@ -499,7 +511,7 @@ $dialect = new MySql();
 $dialect->type('uuid', ['use' => 'char', 'length' => 30]);
 ```
 
-If you don't want to deal with abstract types you directly use `'use'` instead of `'type'` to define a column:
+If you don't want to deal with abstract types you can use directly `'use'` instead of `'type'` to define a column:
 
 ```php
 $createTable = $dialect->statement('create table');
@@ -510,6 +522,24 @@ $createTable
         'data' =>  ['use' => 'blob']
     ]);
 ```
+
+#### Abstract types autodetection
+
+When you are using abstract types, it would be interesting to be able to map databases type to their corresponding abstract type.
+
+Example:
+```php
+$dialect->map('tinyint', 'boolean', ['length' => 1]);
+$dialect->map('tinyint', 'integer');
+
+echo $dialect->mapped('tinyint'); // integer
+echo $dialect->mapped([           // boolean
+    'use'    => 'tinyint'
+    'length' => 1
+]);
+```
+
+Note: for databases like SQLite this won't help much since types are not discriminative enough but this feature can be useful for PostgreSQL or MySQL.
 
 ### DROP TABLE
 

@@ -480,20 +480,52 @@ describe("Dialect", function() {
 
     });
 
-    describe("->typeMatch()", function() {
+    describe("->map()", function() {
 
         it("gets/sets type matching", function() {
 
-            $use = 'real';
-            expect($this->dialect->typeMatch('real', 'float'))->toBe('float');
-            expect($this->dialect->typeMatch('real'))->toBe('float');
+            $this->dialect->map('real', 'float');
+            expect($this->dialect->mapped('real'))->toBe('float');
 
         });
+
+        it("gets/sets type matching with options and column data", function() {
+
+            $this->dialect->map('tinyint', 'boolean', ['length' => 1]);
+            $this->dialect->map('tinyint', 'integer');
+
+            expect($this->dialect->mapped([
+                'use'     => 'tinyint',
+                'default' => 1
+            ]))->toBe('integer');
+
+            expect($this->dialect->mapped([
+                'use'     => 'tinyint',
+                'default' => true,
+                'length'  => 1
+            ]))->toBe('boolean');
+
+        });
+
+        it("throws an exception when options can't many any type", function() {
+
+            $this->dialect->map('tinyint', 'boolean', ['length' => 1]);
+
+            $closure = function() {
+                $this->dialect->mapped(['use' => 'tinyint', 'length'  => 3]);
+            };
+            expect($closure)->toThrow(new SqlException("No type matching has been defined for `'tinyint'`."));
+
+        });
+
+    });
+
+    describe("->mapped()", function() {
 
         it("throws an exception if there's no type matching defined", function() {
 
             $closure = function() {
-                $this->dialect->typeMatch('real');
+                $this->dialect->mapped('real');
             };
             expect($closure)->toThrow(new SqlException("No type matching has been defined for `'real'`."));
 

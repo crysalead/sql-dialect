@@ -19,11 +19,11 @@ class Dialect
     protected $_classes = [];
 
     /**
-     * Defaults internal type matching.
+     * Defaults internal type mapping.
      *
      * @var array
      */
-     protected $_matches = [];
+     protected $_maps = [];
 
     /**
      * The quoter handler.
@@ -116,13 +116,6 @@ class Dialect
      * @var array
      */
     protected $_formatters = [];
-
-    /**
-     * Date format
-     *
-     * @var string
-     */
-    protected $_dateFormat = 'Y-m-d H:i:s';
 
     /**
      * Constructor
@@ -261,21 +254,51 @@ class Dialect
     }
 
     /**
-     * Gets/sets a type matching.
+     * Sets a type mapping.
      *
      * @param  string $type   The type name.
      * @param  array  $config The type definition.
      * @return array          Return the type definition.
      */
-    public function typeMatch($use, $type = null)
+    public function map($use, $type, $options = [])
     {
-        if ($type) {
-            $this->_matches[$use] = $type;
+        if (!isset($this->_maps[$use])) {
+            $this->_maps[$use] = [];
         }
-        if (!isset($this->_matches[$use])) {
+        if ($options) {
+            $this->_maps[$use] = array_merge([$type => $options], $this->_maps[$use]);
+        } else {
+            $this->_maps[$use] += [$type => []];
+        }
+    }
+
+    /**
+     * Gets a mapped type.
+     *
+     * @param  mixed $options The column definition or the database type.
+     * @param  array $config  The type definition.
+     * @return array          Return the type definition.
+     */
+    public function mapped($options)
+    {
+        if (is_array($options)) {
+            $use = $options['use'];
+            unset($options['use']);
+        } else {
+            $use = $options;
+            $options = [];
+        }
+
+        if (!isset($this->_maps[$use])) {
             throw new SqlException("No type matching has been defined for `'{$use}'`.");
         }
-        return $this->_matches[$use];
+
+        foreach ($this->_maps[$use] as $type => $value) {
+            if (!array_diff_assoc($value, $options)) {
+                return $type;
+            }
+        }
+        throw new SqlException("No type matching has been defined for `'{$use}'`.");
     }
 
     /**
@@ -647,7 +670,7 @@ class Dialect
     }
 
     /**
-     * Generate a database-native column schema string
+     * Generates a database-native column schema string
      *
      * @param  array  $column A field array structured like the following:
      *                        `['name' => 'value', 'type' => 'value' [, options]]`, where options
@@ -665,6 +688,26 @@ class Dialect
         }
         $field['use'] = strtolower($field['use']);
         return $this->_column($field);
+    }
+
+    /**
+     * Formats a column name.
+     *
+     * @param  string  $name      A column name.
+     * @param  integer $length    A column length.
+     * @param  integer $precision A column precision.
+     * @return string             The formatted column.
+     */
+    public function _formatColumn($name, $length = null, $precision = null)
+    {
+        $size = [];
+        if ($length) {
+            $size[] = $length;
+        }
+        if ($precision) {
+            $size[] = $precision;
+        }
+        return $size ? $name . '(' . join(',', $size) . ')' : $name;
     }
 
     /**

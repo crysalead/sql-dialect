@@ -13,40 +13,7 @@ class MySql extends \sql\Dialect
      *
      * @var array
      */
-     protected $_matches = [
-        'boolean'            => 'boolean',
-        'tinyint'            => 'integer',
-        'smallint'           => 'integer',
-        'mediumint'          => 'integer',
-        'int'                => 'integer',
-        'bigint'             => 'integer',
-        'float'              => 'float',
-        'double'             => 'float',
-        'decimal'            => 'decimal',
-        'tinytext'           => 'string',
-        'char'               => 'string',
-        'varchar'            => 'string',
-        'time'               => 'string',
-        'date'               => 'datetime',
-        'datetime'           => 'datetime',
-        'tinyblob'           => 'string',
-        'mediumblob'         => 'string',
-        'blob'               => 'string',
-        'longblob'           => 'string',
-        'text'               => 'string',
-        'mediumtext'         => 'string',
-        'longtext'           => 'string',
-        'year'               => 'string',
-        'bit'                => 'string',
-        'geometry'           => 'string',
-        'point'              => 'string',
-        'multipoint'         => 'string',
-        'linestring'         => 'string',
-        'multilinestring'    => 'string',
-        'polygon'            => 'string',
-        'multipolygon'       => 'string',
-        'geometrycollection' => 'string'
-    ];
+     protected $_maps = [];
 
     /**
      * Column type definitions.
@@ -124,9 +91,9 @@ class MySql extends \sql\Dialect
                 ':rlike'       => [],
                 ':sounds like' => [],
                 // Algebraic operations
-                ':union'       => ['type' => 'set'],
-                ':union all'   => ['type' => 'set'],
-                ':minus'       => ['type' => 'set'],
+                ':union'       => ['builder' => 'set'],
+                ':union all'   => ['builder' => 'set'],
+                ':minus'       => ['builder' => 'set'],
                 ':except'      => ['name' => 'MINUS', 'type' => 'set']
             ]
         ];
@@ -145,6 +112,40 @@ class MySql extends \sql\Dialect
         $this->type('time',     ['use' => 'time']);
         $this->type('datetime', ['use' => 'datetime']);
         $this->type('binary',   ['use' => 'blob']);
+
+        $this->map('bigint',             'integer');
+        $this->map('bit',                'string');
+        $this->map('blob',               'string');
+        $this->map('char',               'string');
+        $this->map('date',               'date');
+        $this->map('datetime',           'datetime');
+        $this->map('decimal',            'decimal');
+        $this->map('double',             'float');
+        $this->map('float',              'float');
+        $this->map('geometry',           'string');
+        $this->map('geometrycollection', 'string');
+        $this->map('int',                'integer');
+        $this->map('linestring',         'string');
+        $this->map('longblob',           'string');
+        $this->map('longtext',           'string');
+        $this->map('mediumblob',         'string');
+        $this->map('mediumint',          'integer');
+        $this->map('mediumtext',         'string');
+        $this->map('multilinestring',    'string');
+        $this->map('multipolygon',       'string');
+        $this->map('multipoint',         'string');
+        $this->map('point',              'string');
+        $this->map('polygon',            'string');
+        $this->map('smallint',           'integer');
+        $this->map('text',               'string');
+        $this->map('time',               'string');
+        $this->map('timestamp',          'datetime');
+        $this->map('tinyblob',           'string');
+        $this->map('tinyint',            'boolean', ['length' => 1]);
+        $this->map('tinyint',            'integer');
+        $this->map('tinytext',           'string');
+        $this->map('varchar',            'string');
+        $this->map('year',               'string');
     }
 
     /**
@@ -161,14 +162,7 @@ class MySql extends \sql\Dialect
             $use = 'decimal';
         }
 
-        $column = $this->name($name) . ' ' . $use;
-
-        $allowPrecision = preg_match('/^(decimal|float|double|real|numeric)$/', $use);
-        $precision = ($precision && $allowPrecision) ? ",{$precision}" : '';
-
-        if ($length && ($allowPrecision || preg_match('/(char|binary|int|year)/',$use))) {
-            $column .= "({$length}{$precision})";
-        }
+        $column = $this->name($name) . ' ' . $this->_formatColumn($use, $length, $precision);
 
         $result = [$column];
         $result[] = $this->meta('column', $field, ['charset', 'collate']);
@@ -177,7 +171,7 @@ class MySql extends \sql\Dialect
             $result[] = 'NOT NULL AUTO_INCREMENT';
         } else {
             $result[] = is_bool($null) ? ($null ? 'NULL' : 'NOT NULL') : '' ;
-            if ($default) {
+            if ($default !== null) {
                 if (is_array($default)) {
                     list($operator, $default) = each($default);
                 } else {

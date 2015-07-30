@@ -419,6 +419,30 @@ describe("MySql Dialect", function() {
 
             });
 
+            it("generates a boolean column where default is `true`", function() {
+
+                $data = [
+                    'name'    => 'active',
+                    'type'    => 'boolean',
+                    'default' => true
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`active` boolean DEFAULT TRUE');
+
+            });
+
+            it("generates a boolean column where default is `false`", function() {
+
+                $data = [
+                    'name'    => 'active',
+                    'type'    => 'boolean',
+                    'default' => false
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`active` boolean DEFAULT FALSE');
+
+            });
+
         });
 
         context("with a binary column", function() {

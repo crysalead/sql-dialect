@@ -13,49 +13,7 @@ class PostgreSql extends \sql\Dialect
      *
      * @var array
      */
-    protected $_matches = [
-        'bool'          => 'boolean',
-        'boolean'       => 'boolean',
-        'int2'          => 'integer',
-        'int4'          => 'integer',
-        'int8'          => 'integer',
-        'integer'       => 'integer',
-        'real'          => 'float',
-        'float4'        => 'float',
-        'float8'        => 'float',
-        'bytea'         => 'binary',
-        'numeric'       => 'decimal',
-        'text'          => 'string',
-        'char'          => 'string',
-        'character'     => 'string',
-        'varying'       => 'string',
-        'varchar'       => 'string',
-        'macaddr'       => 'string',
-        'inet'          => 'string',
-        'cidr'          => 'string',
-        'string'        => 'string',
-        'date'          => 'date',
-        'time'          => 'time',
-        'timestamp'     => 'datetime',
-        'timestamptz'   => 'datetime',
-        'lseg'          => 'string',
-        'path'          => 'string',
-        'box'           => 'string',
-        'polygon'       => 'string',
-        'line'          => 'string',
-        'circle'        => 'string',
-        'bit'           => 'string',
-        'varbit'        => 'string',
-        'decimal'       => 'string',
-        'uuid'          => 'string',
-        'tsvector'      => 'string',
-        'tsquery'       => 'string',
-        'txid_snapshot' => 'string',
-        'json'          => 'string',
-        'uuid'          => 'string',
-        'xml'           => 'string',
-        'serial'        => 'serial'
-    ];
+    protected $_maps = [];
 
     /**
      * Escape identifier character.
@@ -129,12 +87,12 @@ class PostgreSql extends \sql\Dialect
                 '<@'              => [],
                 '@>'              => [],
                 // Algebraic operations
-                ':union'          => ['type' => 'set'],
-                ':union all'      => ['type' => 'set'],
-                ':except'         => ['type' => 'set'],
-                ':except all'     => ['type' => 'set'],
-                ':intersect'      => ['type' => 'set'],
-                ':intersect all'  => ['type' => 'set']
+                ':union'          => ['builder' => 'set'],
+                ':union all'      => ['builder' => 'set'],
+                ':except'         => ['builder' => 'set'],
+                ':except all'     => ['builder' => 'set'],
+                ':intersect'      => ['builder' => 'set'],
+                ':intersect all'  => ['builder' => 'set']
             ]
         ];
 
@@ -153,6 +111,51 @@ class PostgreSql extends \sql\Dialect
         $this->type('time',     ['use' => 'time']);
         $this->type('datetime', ['use' => 'timestamp']);
         $this->type('binary',   ['use' => 'bytea']);
+
+        $this->map('bit',                         'string');
+        $this->map('bool',                        'boolean');
+        $this->map('boolean',                     'boolean');
+        $this->map('box',                         'string');
+        $this->map('bytea',                       'binary');
+        $this->map('char',                        'string');
+        $this->map('character',                   'string');
+        $this->map('character varying',           'string');
+        $this->map('cidr',                        'string');
+        $this->map('circle',                      'string');
+        $this->map('date',                        'date');
+        $this->map('decimal',                     'string');
+        $this->map('float4',                      'float');
+        $this->map('float8',                      'float');
+        $this->map('inet',                        'string');
+        $this->map('int2',                        'integer');
+        $this->map('int4',                        'integer');
+        $this->map('int8',                        'integer');
+        $this->map('integer',                     'integer');
+        $this->map('json',                        'string');
+        $this->map('lseg',                        'string');
+        $this->map('line',                        'string');
+        $this->map('macaddr',                     'string');
+        $this->map('numeric',                     'decimal');
+        $this->map('path',                        'string');
+        $this->map('polygon',                     'string');
+        $this->map('real',                        'float');
+        $this->map('serial',                      'serial');
+        $this->map('string',                      'string');
+        $this->map('text',                        'string');
+        $this->map('time',                        'time');
+        $this->map('time with time zone',         'time');
+        $this->map('time without time zone',      'time');
+        $this->map('timestamp',                   'datetime');
+        $this->map('timestamp with time zone',    'datetime');
+        $this->map('timestamp without time zone', 'datetime');
+        $this->map('timestamptz',                 'datetime');
+        $this->map('tsquery',                     'string');
+        $this->map('tsvector',                    'string');
+        $this->map('txid_snapshot',               'string');
+        $this->map('uuid',                        'string');
+        $this->map('varbit',                      'string');
+        $this->map('varchar',                     'string');
+        $this->map('xml',                         'string');
     }
 
     /**
@@ -169,14 +172,7 @@ class PostgreSql extends \sql\Dialect
             $use = 'numeric';
         }
 
-        $column = $this->name($name) . ' ' . $use;
-
-        $allowPrecision = preg_match('/^(decimal|float|double|real|numeric)$/', $use);
-        $precision = ($precision && $allowPrecision) ? ",{$precision}" : '';
-
-        if ($length && ($allowPrecision || preg_match('/char|numeric|interval|bit|time/',$use))) {
-            $column .= "({$length}{$precision})";
-        }
+        $column = $this->name($name) . ' ' . $this->_formatColumn($use, $length, $precision);
 
         $result = [$column];
 
@@ -184,7 +180,7 @@ class PostgreSql extends \sql\Dialect
             $result[] = 'NOT NULL';
         } else {
             $result[] = is_bool($null) ? ($null ? 'NULL' : 'NOT NULL') : '' ;
-            if ($default) {
+            if ($default !== null) {
                 if (is_array($default)) {
                     list($operator, $default) = each($default);
                 } else {

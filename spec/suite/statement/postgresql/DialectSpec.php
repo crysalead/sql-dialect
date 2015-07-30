@@ -196,8 +196,7 @@ describe("PostgreSql Dialect", function() {
 
                 $data = [
                     'name' => 'fieldname',
-                    'type' => 'integer',
-                    'length' => 11
+                    'type' => 'integer'
                 ];
                 $result = $this->dialect->column($data);
                 expect($result)->toBe('"fieldname" integer');
@@ -368,6 +367,30 @@ describe("PostgreSql Dialect", function() {
 
             });
 
+            it("generates a boolean column where default is `true`", function() {
+
+                $data = [
+                    'name'    => 'active',
+                    'type'    => 'boolean',
+                    'default' => true
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('"active" boolean DEFAULT TRUE');
+
+            });
+
+            it("generates a boolean column where default is `false`", function() {
+
+                $data = [
+                    'name'    => 'active',
+                    'type'    => 'boolean',
+                    'default' => false
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('"active" boolean DEFAULT FALSE');
+
+            });
+
         });
 
         context("with a binary column", function() {
@@ -427,7 +450,6 @@ describe("PostgreSql Dialect", function() {
                 $data = [
                     'name' => 'fieldname',
                     'type' => 'integer',
-                    'length' => 11,
                     'default' => 1
                 ];
                 $result = $this->dialect->column($data);
@@ -462,7 +484,6 @@ describe("PostgreSql Dialect", function() {
                     $data = [
                         'name'    => 'fieldname',
                         'type'    => 'integer',
-                        'length'  => 11,
                         'default' => '1'
                     ];
                     $result = $this->dialect->column($data);

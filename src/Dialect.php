@@ -390,27 +390,25 @@ class Dialect
         return $sql;
     }
 
-    public function prefix($data, $prefix)
+    public function prefix($data, $prefix, $prefixValue = true)
     {
         $result = [];
         foreach ($data as $key => $value) {
             if ($this->isOperator($key)) {
                 if ($key === ':name') {
                     $value = $this->_prefix($value, $prefix);
+                } else {
+                    $value = is_array($value) ? $this->prefix($value, $prefix, false) : $value;
                 }
-                if (!is_array($value)) {
-                    $result[$key] = $value;
-                    continue;
-                }
-            }
-            if (is_array($value)) {
-                $result[$key] = $this->prefix($value, $prefix);
+                $result[$key] = $value;
                 continue;
             }
-            if (is_numeric($key)) {
-                $value = $this->_prefix($value, $prefix);
-            } else {
+            if (!is_numeric($key)) {
                 $key = $this->_prefix($key, $prefix);
+            } elseif (is_array($value)) {
+                $value = $this->prefix($value, $prefix, false);
+            } elseif ($prefixValue) {
+                $value = $this->_prefix($value, $prefix);
             }
             $result[$key] = $value;
         }

@@ -406,7 +406,6 @@ describe("Dialect", function() {
 
         });
 
-
     });
 
     describe("->prefix()", function() {
@@ -415,29 +414,50 @@ describe("Dialect", function() {
 
             $part = $this->dialect->prefix([
                 'field1',
-                'field2'
+                'field2',
+                'prefix.field3'
             ], 'prefix');
 
             expect($part)->toBe([
-                "prefix.field1",
-                "prefix.field2",
+                'prefix.field1',
+                'prefix.field2',
+                'prefix.field3'
             ]);
 
         });
 
         context("with conditions", function() {
 
-            it("prefixes names", function() {
+            it("prefixes field names", function() {
+
+                $part = $this->dialect->conditions($this->dialect->prefix([
+                    'value1',
+                    'value2'
+                ], 'prefix', false));
+                expect($part)->toBe("'value1' AND 'value2'");
+
+            });
+
+            it("prefixes field names", function() {
 
                 $part = $this->dialect->conditions($this->dialect->prefix([
                     'field1' => 'value',
                     'field2' => 10
-                ], 'prefix'));
+                ], 'prefix', false));
                 expect($part)->toBe('"prefix"."field1" = \'value\' AND "prefix"."field2" = 10');
 
             });
 
-            it("prefixes nested names", function() {
+            it("doesn't prefixes values", function() {
+
+                $part = $this->dialect->conditions($this->dialect->prefix([
+                    'field1' => [1, 2, 3]
+                ], 'prefix', false));
+                expect($part)->toBe('"prefix"."field1" IN (1, 2, 3)');
+
+            });
+
+            it("prefixes nested field names", function() {
 
                 $part = $this->dialect->conditions($this->dialect->prefix([
                     ['=' => [

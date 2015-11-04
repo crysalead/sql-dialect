@@ -58,50 +58,7 @@ class Dialect
      *
      * @var array
      */
-    protected $_operators = [
-        '='            => ['null' => ':is'],
-        '<=>'          => [],
-        '<'            => [],
-        '>'            => [],
-        '<='           => [],
-        '>='           => [],
-        '!='           => ['null' => ':is not'],
-        '<>'           => [],
-        '-'            => [],
-        '+'            => [],
-        '*'            => [],
-        '/'            => [],
-        '%'            => [],
-        '>>'           => [],
-        '<<'           => [],
-        ':='           => [],
-        '&'            => [],
-        '|'            => [],
-        ':mod'         => [],
-        ':div'         => [],
-        ':like'        => [],
-        ':not like'    => [],
-        ':is'          => [],
-        ':is not'      => [],
-        ':distinct'    => ['builder' => 'prefix'],
-        '~'            => ['builder' => 'prefix'],
-        ':between'     => ['builder' => 'between'],
-        ':not between' => ['builder' => 'between'],
-        ':in'          => ['builder' => 'list'],
-        ':not in'      => ['builder' => 'list'],
-        ':exists'      => ['builder' => 'list'],
-        ':not exists'  => ['builder' => 'list'],
-        ':all'         => ['builder' => 'list'],
-        ':any'         => ['builder' => 'list'],
-        ':some'        => ['builder' => 'list'],
-        ':as'          => ['builder' => 'alias'],
-        // logical operators
-        ':not'         => ['builder' => 'prefix'],
-        ':and'         => [],
-        ':or'          => [],
-        ':xor'         => [],
-        '()'           => ['format' => '(%s)']
-    ];
+    protected $_operators = [];
 
     /**
      * Operator builders
@@ -130,15 +87,15 @@ class Dialect
                 'insert'       => 'sql\statement\Insert',
                 'update'       => 'sql\statement\Update',
                 'delete'       => 'sql\statement\Delete',
-                //'create table' => 'sql\statement\CreateTable',
+                'create table' => 'sql\statement\CreateTable',
                 'drop table'   => 'sql\statement\DropTable'
             ],
             'quoter' => null,
             'caster' => null,
             'types' => [],
-            'operators' => [],
-            'builders' => $this->_builders(),
-            'formatters' => $this->_formatters(),
+            'operators' => $this->_defaultOperators(),
+            'builders' => $this->_defaultBuilders(),
+            'formatters' => $this->_defaultFormatters(),
             'dateFormat' => 'Y-m-d H:i:s'
         ];
 
@@ -148,10 +105,63 @@ class Dialect
         $this->_quoter = $config['quoter'];
         $this->_caster = $config['caster'];
         $this->_dateFormat = $config['dateFormat'];
-        $this->_types = $config['types'] + $this->_types;
-        $this->_builders = $config['builders'] + $this->_builders;
-        $this->_formatters = $config['formatters'] +$this->_formatters;
-        $this->_operators = $config['operators'] + $this->_operators;
+        $this->_types = $config['types'];
+        $this->_builders = $config['builders'];
+        $this->_formatters = $config['formatters'];
+        $this->_operators = $config['operators'];
+    }
+
+    /**
+     * Return default supported operators
+     *
+     * @return array
+     */
+    protected function _defaultOperators()
+    {
+        return [
+            '='            => ['null' => ':is'],
+            '<=>'          => [],
+            '<'            => [],
+            '>'            => [],
+            '<='           => [],
+            '>='           => [],
+            '!='           => ['null' => ':is not'],
+            '<>'           => [],
+            '-'            => [],
+            '+'            => [],
+            '*'            => [],
+            '/'            => [],
+            '%'            => [],
+            '>>'           => [],
+            '<<'           => [],
+            ':='           => [],
+            '&'            => [],
+            '|'            => [],
+            ':mod'         => [],
+            ':div'         => [],
+            ':like'        => [],
+            ':not like'    => [],
+            ':is'          => [],
+            ':is not'      => [],
+            ':distinct'    => ['builder' => 'prefix'],
+            '~'            => ['builder' => 'prefix'],
+            ':between'     => ['builder' => 'between'],
+            ':not between' => ['builder' => 'between'],
+            ':in'          => ['builder' => 'list'],
+            ':not in'      => ['builder' => 'list'],
+            ':exists'      => ['builder' => 'list'],
+            ':not exists'  => ['builder' => 'list'],
+            ':all'         => ['builder' => 'list'],
+            ':any'         => ['builder' => 'list'],
+            ':some'        => ['builder' => 'list'],
+            ':as'          => ['builder' => 'alias'],
+            // logical operators
+            ':not'         => ['builder' => 'prefix'],
+            ':and'         => [],
+            ':or'          => [],
+            ':xor'         => [],
+            '()'           => ['format' => '(%s)']
+        ];
     }
 
     /**
@@ -159,7 +169,7 @@ class Dialect
      *
      * @return array
      */
-    protected function _builders()
+    protected function _defaultBuilders()
     {
         return [
             'function' => function ($operator, $parts) {
@@ -192,7 +202,7 @@ class Dialect
      *
      * @return array
      */
-    protected function _formatters()
+    protected function _defaultFormatters()
     {
         return [
             ':name' => function ($value, $states) {

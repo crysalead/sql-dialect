@@ -141,28 +141,60 @@ class Statement
         return $this->toString();
     }
 
+    /**
+     * Builds a clause.
+     *
+     * @param  string $clause     The clause name.
+     * @param  string $expression The expression.
+     * @return string             The clause.
+     */
     protected function _buildClause($clause, $expression)
     {
         return $expression ? " {$clause} {$expression}": '';
     }
 
+    /**
+     * Builds Flags.
+     *
+     * @param  array  $flags  The flags map.
+     * @return string         The formatted flags.
+     */
     protected function _buildFlags($flags)
     {
         $flags = array_filter($flags);
         return $flags ? ' ' . join(' ', array_keys($flags)) : '';
     }
 
-
+    /**
+     * Builds a Flag chunk.
+     *
+     * @param  string  $flag  The flag name.
+     * @param  boolean $value The value.
+     * @return string         The SQL flag.
+     */
     protected function _buildFlag($flag, $value)
     {
         return $value ? " {$flag}": '';
     }
 
+    /**
+     * Builds a SQL chunk.
+     *
+     * @param  string $sql The SQL string.
+     * @return string      The SQL chunk.
+     */
     protected function _buildChunk($sql)
     {
         return $sql ? " {$sql}" : '';
     }
 
+    /**
+     * Builds the ORDER BY clause.
+     *
+     * @param  array  $fields The fields map.
+     * @param  array  $paths  The paths.
+     * @return string         The clause.
+     */
     protected function _buildOrder($fields, $paths = [])
     {
         $result = [];

@@ -461,20 +461,20 @@ class Dialect
         if (!$conditions) {
             return '';
         }
-        $defaults = ['prepend' => false, 'operator' => ':and', 'schemas' => []];
+        $defaults = [
+            'prepend' => false,
+            'operator' => ':and',
+            'schemas' => [],
+            'schema' => null,
+            'name' => null,
+        ];
         $options += $defaults;
 
         if (!is_numeric(key($conditions))) {
             $conditions = [$conditions];
         }
 
-        $states = $options + [
-            'schemas' => [],
-            'schema' => null,
-            'name' => null,
-        ];
-
-        $result = $this->_operator(strtolower($options['operator']), $conditions, $states);
+        $result = $this->_operator(strtolower($options['operator']), $conditions, $options);
         return ($options['prepend'] && $result) ? "{$options['prepend']} {$result}" : $result;
     }
 

@@ -348,8 +348,9 @@ class Dialect
     /**
      * SQL Statement factory
      *
-     * @param string $name The name of the statement to instantiate.
-     * @param
+     * @param  string $name   The name of the statement to instantiate.
+     * @param  array  $config The configuration options.
+     * @return object         A statement instance.
      */
     public function statement($name, $config = [])
     {
@@ -365,6 +366,9 @@ class Dialect
 
     /**
      * Generates a list of escaped table/field names identifier.
+     *
+     * @param  array  $fields The fields to format.
+     * @return string         The formatted fields.
      */
     public function names($fields)
     {

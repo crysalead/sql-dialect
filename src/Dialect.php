@@ -372,7 +372,7 @@ class Dialect
      */
     public function names($fields)
     {
-        return (string) join(", ", $this->escapes(is_array($fields) ? $fields : [$fields], ''));
+        return (string) join(", ", $this->escapes($fields, ''));
     }
 
     /**

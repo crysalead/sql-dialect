@@ -42,9 +42,16 @@ class Dialect
     /**
      * Quoting identifier character.
      *
-     * @var array
+     * @var string
      */
     protected $_escape = '"';
+
+    /**
+     * Date format.
+     *
+     * @var string
+     */
+    protected $_dateFormat = 'Y-m-d H:i:s';
 
     /**
      * Column type definitions.

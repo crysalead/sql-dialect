@@ -809,8 +809,8 @@ class Dialect
                     $data[$name] = $this->conditions(is_array($value) ? $value : [$value], $options);
                 break;
                 case 'column':
-                case 'primaryKey';
-                case 'foreignKey';
+                case 'primaryKey':
+                case 'foreignKey':
                     $data[$name] = join(', ', array_map([$this, 'name'], (array) $value));
                 break;
             }

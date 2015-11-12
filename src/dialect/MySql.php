@@ -9,20 +9,6 @@ use set\Set;
 class MySql extends \sql\Dialect
 {
     /**
-     * MySQL types and their associatied internal types.
-     *
-     * @var array
-     */
-     protected $_maps = [];
-
-    /**
-     * Column type definitions.
-     *
-     * @var array
-     */
-    protected $_types = [];
-
-    /**
      * Escape identifier character.
      *
      * @var string

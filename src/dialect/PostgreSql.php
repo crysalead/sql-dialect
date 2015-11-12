@@ -9,13 +9,6 @@ use set\Set;
 class PostgreSql extends \sql\Dialect
 {
     /**
-     * PostgreSql types matching
-     *
-     * @var array
-     */
-    protected $_maps = [];
-
-    /**
      * Escape identifier character.
      *
      * @var array

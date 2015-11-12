@@ -88,24 +88,10 @@ class Select extends \sql\Statement
     }
 
     /**
-     * Adds some where conditions to the query
-     *
-     * @param  string|array $conditions The conditions for this query.
-     * @return object                   Returns `$this`.
-     */
-    public function where($conditions)
-    {
-        if ($conditions = is_array($conditions) && func_num_args() === 1 ? $conditions : func_get_args()) {
-            $this->_parts['where'][] = $conditions;
-        }
-        return $this;
-    }
-
-    /**
-     * Adds some group by fields to the query
+     * Adds some group by fields to the query.
      *
      * @param  string|array $fields The fields.
-     * @return object                   Returns `$this`.
+     * @return object               Returns `$this`.
      */
     public function group($fields)
     {
@@ -129,42 +115,6 @@ class Select extends \sql\Statement
         if ($conditions = is_array($conditions) && func_num_args() === 1 ? $conditions : func_get_args()) {
             $this->_parts['having'][] = $conditions;
         }
-        return $this;
-    }
-
-    /**
-     * Adds some order by fields to the query
-     *
-     * @param  string|array $fields The fields.
-     * @return object                   Returns `$this`.
-     */
-    public function order($fields)
-    {
-        if (!$fields) {
-            return $this;
-        }
-        if ($fields = is_array($fields) ? $fields : func_get_args()) {
-            $this->_parts['order'] = array_merge($this->_parts['order'], $this->_order($fields));
-        }
-        return $this;
-    }
-
-    /**
-     * Adds a limit statement to the query
-     *
-     * @param  integer $limit  The limit value.
-     * @param  integer $offset The offset value.
-     * @return object          Returns `$this`.
-     */
-    public function limit($limit = 0, $offset = 0)
-    {
-        if (!$limit) {
-            return $this;
-        }
-        if ($offset) {
-            $limit .= " OFFSET {$offset}";
-        }
-        $this->_parts['limit'] = $limit;
         return $this;
     }
 
@@ -211,9 +161,9 @@ class Select extends \sql\Statement
             $this->_buildClause('FROM', $this->dialect()->names($this->_parts['from'])) .
             $this->_buildJoins() .
             $this->_buildClause('WHERE', $this->dialect()->conditions($this->_parts['where'])) .
-            $this->_buildClause('GROUP BY', $this->_group($this->_parts['group'])) .
+            $this->_buildClause('GROUP BY', $this->_group()) .
             $this->_buildClause('HAVING', $this->dialect()->conditions($this->_parts['having'])) .
-            $this->_buildOrder($this->_parts['order']) .
+            $this->_buildOrder() .
             $this->_buildClause('LIMIT', $this->_parts['limit']) .
             $this->_buildFlag('FOR UPDATE', $this->_parts['forUpdate']);
 
@@ -228,7 +178,7 @@ class Select extends \sql\Statement
     protected function _group()
     {
         $result = [];
-        foreach ($fields as $name => $value) {
+        foreach ($this->_parts['group'] as $name => $value) {
             $result[] = $this->dialect()->name($name);
         }
         return $fields = join(', ', $result);

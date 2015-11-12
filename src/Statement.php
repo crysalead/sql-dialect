@@ -41,12 +41,13 @@ class Statement
      * Gets/sets the dialect instance
      *
      * @param  object $dialect The dialect instance to set or none the get the setted one.
-     * @throws SqlException
+     * @return object          The dialect instance or `$this` on set.
      */
     public function dialect($dialect = null)
     {
         if ($dialect !== null) {
             $this->_dialect = $dialect;
+            return $this;
         }
         if (!$this->_dialect) {
             throw new SqlException('Missing SQL dialect adapter.');
@@ -93,12 +94,61 @@ class Statement
     }
 
     /**
+     * Adds some where conditions to the query.
+     *
+     * @param  string|array $conditions The conditions for this query.
+     * @return object                   Returns `$this`.
+     */
+    public function where($conditions)
+    {
+        if ($conditions = is_array($conditions) && func_num_args() === 1 ? $conditions : func_get_args()) {
+            $this->_parts['where'][] = $conditions;
+        }
+        return $this;
+    }
+
+    /**
+     * Adds some order by fields to the query.
+     *
+     * @param  string|array $fields The fields.
+     * @return object               Returns `$this`.
+     */
+    public function order($fields = null)
+    {
+        if (!$fields) {
+            return $this;
+        }
+        if ($fields = is_array($fields) ? $fields : func_get_args()) {
+            $this->_parts['order'] = array_merge($this->_parts['order'], $this->_order($fields));
+        }
+        return $this;
+    }
+
+    /**
+     * Adds a limit statement to the query.
+     *
+     * @param  integer $limit  The limit value.
+     * @param  integer $offset The offset value.
+     * @return object          Returns `$this`.
+     */
+    public function limit($limit = 0, $offset = 0)
+    {
+        if (!$limit) {
+            return $this;
+        }
+        if ($offset) {
+            $limit .= " OFFSET {$offset}";
+        }
+        $this->_parts['limit'] = $limit;
+        return $this;
+    }
+
+    /**
      * Order formatter helper method
      *
      * @param  string|array $fields The fields.
      * @return string       Formatted fields.
      */
-
     protected function _order($fields)
     {
         $direction = 'ASC';
@@ -189,18 +239,15 @@ class Statement
     }
 
     /**
-     * Builds the ORDER BY clause.
+     * Builds the `ORDER BY` clause.
      *
-     * @param  array  $fields The fields map.
-     * @param  array  $paths  The paths.
-     * @return string         The clause.
+     * @return string The `ORDER BY` clause.
      */
-    protected function _buildOrder($fields, $paths = [])
+    protected function _buildOrder()
     {
         $result = [];
-
-        foreach ($fields as $column => $dir) {
-            $column = $this->dialect()->name($column, $paths);
+        foreach ($this->_parts['order'] as $column => $dir) {
+            $column = $this->dialect()->name($column);
             $result[] = "{$column} {$dir}";
         }
         return $this->_buildClause('ORDER BY', join(', ', $result));

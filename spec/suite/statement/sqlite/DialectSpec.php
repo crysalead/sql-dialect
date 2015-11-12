@@ -32,36 +32,6 @@ describe("Sqlite Dialect", function() {
 
     describe("->conditions()", function() {
 
-        it("generates a comparison with an array", function() {
-
-            $part = $this->dialect->conditions([
-                'score' => [':value' => [1, 2, 3, 4, 5]]
-            ]);
-            expect($part)->toBe('"score" = {1,2,3,4,5}');
-
-        });
-
-        it("generates a comparison with a nested array", function() {
-
-            $part = $this->dialect->conditions([
-                'score' => [':value' => [1, [2, [3, [4, [5]]]]]]
-            ]);
-            expect($part)->toBe('"score" = {1,{2,{3,{4,{5}}}}}');
-
-        });
-
-        it("generates an comparison expression with arrays", function() {
-
-            $part = $this->dialect->conditions([
-                '<>' => [
-                    [':value' => [1 ,2, 3]],
-                    [':value' => [1, 2, 3]]
-                ]
-            ]);
-            expect($part)->toBe('{1,2,3} <> {1,2,3}');
-
-        });
-
         it("manages set operators", function() {
 
             $select1 = $this->dialect->statement('select')->from('table1');

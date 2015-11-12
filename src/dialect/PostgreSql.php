@@ -23,9 +23,9 @@ class PostgreSql extends \sql\Dialect
     protected $_escape = '"';
 
     /**
-     * Meta attribute syntax pattern.
+     * Meta attribute patterns.
      *
-     * Note: by default `'escape'` is false and 'join' is `' '`.
+     * Note: by default `'escape'` is `false` and 'join' is `' '`.
      *
      * @var array
      */
@@ -162,8 +162,9 @@ class PostgreSql extends \sql\Dialect
      * Helper for creating columns
      *
      * @see    chaos\source\sql\Dialect::column()
-     * @param  array $field A field array
-     * @return string The SQL column string
+     *
+     * @param  array  $field A field array
+     * @return string        The SQL column string
      */
     protected function _column($field)
     {

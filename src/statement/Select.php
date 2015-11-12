@@ -44,7 +44,7 @@ class Select extends \sql\Statement
     }
 
     /**
-     * Adds some fields to the query
+     * Adds some fields to the query.
      *
      * @param  string|array $fields The fields.
      * @return string               Formatted fields list.
@@ -73,10 +73,10 @@ class Select extends \sql\Statement
     }
 
     /**
-     * Adds a join to the query
+     * Adds a join to the query.
      *
      * @param  string|array $join A join definition.
-     * @return string              Formatted `JOIN` clause.
+     * @return string             Formatted `JOIN` clause.
      */
     public function join($join = null, $on = [], $type = 'LEFT')
     {
@@ -119,7 +119,7 @@ class Select extends \sql\Statement
     }
 
     /**
-     * Adds some having conditions to the query
+     * Adds some having conditions to the query.
      *
      * @param  string|array $conditions The havings for this query.
      * @return object                   Returns `$this`.
@@ -182,10 +182,10 @@ class Select extends \sql\Statement
 
     /**
      * If called with a valid alias, the generated select statement
-     * will be generated as a subquery
+     * will be generated as a subquery.
      *
      * @param  string $alias The alias to use for a subquery.
-     * @return object        Returns `$this`.
+     * @return string        Returns the alias or `$this` on set.
      */
     public function alias($alias = null)
     {
@@ -200,7 +200,6 @@ class Select extends \sql\Statement
      * Render the SQL statement
      *
      * @return string The generated SQL string.
-     * @throws SqlException
      */
     public function toString()
     {
@@ -221,7 +220,12 @@ class Select extends \sql\Statement
         return $this->_alias ? "({$sql}) AS " . $this->dialect()->name($this->_alias) : $sql;
     }
 
-    protected function _group($fields)
+    /**
+     * Build the `GROUP BY` clause.
+     *
+     * @return string The `GROUP BY` clause.
+     */
+    protected function _group()
     {
         $result = [];
         foreach ($fields as $name => $value) {
@@ -230,6 +234,11 @@ class Select extends \sql\Statement
         return $fields = join(', ', $result);
     }
 
+    /**
+     * Build the `JOIN` clause.
+     *
+     * @return string The `JOIN` clause.
+     */
     protected function _buildJoins()
     {
         $joins = [];

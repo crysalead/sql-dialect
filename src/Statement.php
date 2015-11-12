@@ -27,8 +27,8 @@ class Statement
     /**
      * Constructor
      *
-     * @param  array $config The config array. The options is:
-     *                       - 'adapter' `object` a dialect adapter.
+     * @param array $config The config array. The option is:
+     *                       - 'dialect' `object` a dialect adapter.
      */
     public function __construct($config = [])
     {

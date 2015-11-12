@@ -84,8 +84,8 @@ class CreateTable extends \sql\Statement
     /**
      * Adds a constraint to the query.
      *
-     * @param  array  $constraint  An constraint array definition for columns.
-     * @return object              Returns `$this`.
+     * @param  array  $constraint An constraint array definition for columns.
+     * @return object             Returns `$this`.
      */
     public function constraint($constraint)
     {
@@ -108,7 +108,7 @@ class CreateTable extends \sql\Statement
     }
 
     /**
-     * Render the SQL statement
+     * Render the SQL statement.
      *
      * @return string The generated SQL string.
      */
@@ -130,7 +130,7 @@ class CreateTable extends \sql\Statement
     }
 
     /**
-     * Helper for building columns definition
+     * Helper for building columns definition.
      *
      * @param  array  $columns     The columns.
      * @param  array  $constraints The columns constraints.

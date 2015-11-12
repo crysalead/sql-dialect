@@ -19,21 +19,21 @@ class Dialect
     protected $_classes = [];
 
     /**
-     * Defaults internal type mapping.
+     * Type mapping.
      *
      * @var array
      */
      protected $_maps = [];
 
     /**
-     * The quoter handler.
+     * Quoter handler.
      *
      * @var Closure
      */
     protected $_quoter = null;
 
     /**
-     * The casting handler.
+     * Casting handler.
      *
      * @var Closure
      */
@@ -84,7 +84,7 @@ class Dialect
     /**
      * Constructor
      *
-     * @param array $config The config array
+     * @param array $config The config array.
      */
     public function __construct($config = [])
     {
@@ -119,7 +119,7 @@ class Dialect
     }
 
     /**
-     * Return default supported operators
+     * Returns supported operators.
      *
      * @return array
      */
@@ -172,7 +172,7 @@ class Dialect
     }
 
     /**
-     * Return default operator builders
+     * Returns operator builders.
      *
      * @return array
      */
@@ -205,7 +205,7 @@ class Dialect
     }
 
     /**
-     * Return default formatters.
+     * Returns formatters.
      *
      * @return array
      */
@@ -225,7 +225,7 @@ class Dialect
     }
 
     /**
-     * Gets/sets the quoter handler
+     * Gets/sets the quoter handler.
      *
      * @param  Closure $quoter The quoter handler.
      * @return Closure         Returns the quoter handler.
@@ -239,7 +239,7 @@ class Dialect
     }
 
     /**
-     * Gets/sets the casting handler
+     * Gets/sets the casting handler.
      *
      * @param  Closure $caster The casting handler.
      * @return Closure         Returns the casting handler.
@@ -253,7 +253,7 @@ class Dialect
     }
 
     /**
-     * Gets/sets an internal type definition
+     * Gets/sets an internal type definition.
      *
      * @param  string $type   The type name.
      * @param  array  $config The type definition.
@@ -292,7 +292,7 @@ class Dialect
     /**
      * Gets a mapped type.
      *
-     * @param  mixed $options The column definition or the database type.
+     * @param  array $options The column definition or the database type.
      * @param  array $config  The type definition.
      * @return array          Return the type definition.
      */
@@ -319,10 +319,10 @@ class Dialect
     }
 
     /**
-     * Formats a field definition
+     * Formats a field definition.
      *
-     * @param  array $field   A partial field definition.
-     * @return array          A complete field definition.
+     * @param  array $field A partial field definition.
+     * @return array        A complete field definition.
      */
     public function field($field)
     {
@@ -346,7 +346,7 @@ class Dialect
     }
 
     /**
-     * SQL Statement factory
+     * SQL statement factory.
      *
      * @param  string $name   The name of the statement to instantiate.
      * @param  array  $config The configuration options.
@@ -380,6 +380,9 @@ class Dialect
      *
      * Note: it ignores duplicates.
      *
+     * @param  string|array $names  A name or an array of names to escapes.
+     * @param  string       $prefix An optionnal table/alias prefix to use.
+     * @return array                An array of escaped fields.
      */
     public function escapes($names, $prefix)
     {
@@ -411,6 +414,14 @@ class Dialect
         return $sql;
     }
 
+    /**
+     * Prefixes a list of identifers.
+     *
+     * @param  string|array $names       A name or an array of names to prefix.
+     * @param  string       $prefix      The prefix to use.
+     * @param  boolean      $prefixValue Boolean indicating if prefixing must occurs.
+     * @return array                     The prefixed names.
+     */
     public function prefix($data, $prefix, $prefixValue = true)
     {
         $result = [];
@@ -436,6 +447,13 @@ class Dialect
         return $result;
     }
 
+    /**
+     * Prefixes a identifer.
+     *
+     * @param  string $names  The name to prefix.
+     * @param  string $prefix The prefix.
+     * @return string         The prefixed name.
+     */
     public function _prefix($name, $prefix)
     {
         list($alias, $field) = $this->undot($name);
@@ -451,10 +469,12 @@ class Dialect
      * - If `$key` is numeric and `$value` is a string, `$value` is treated as a literal SQL
      *   fragment and returned.
      *
-     * @param  string|array $conditions The conditions for this query.
-     * @param  array        $options    - `prepend` mixed: The string to prepend or false for
-     *                                  no prepending.
-     * @return string                   Returns an SQL conditions clause.
+     * @param  array $conditions The conditions for this query.
+     * @param  array $options    The options. Possible values are:
+     *                            - `prepend`  _string_: The string to prepend or `false` for no prefix.
+     *                            - `operator` _string_: The join operator.
+     *                            - `schemas`  _array_ : The schemas hash object.
+     * @return string            Returns an SQL conditions clause.
      */
     public function conditions($conditions, $options = [])
     {
@@ -482,8 +502,9 @@ class Dialect
      * Build a SQL operator statement.
      *
      * @param  string $operator   The operator.
-     * @param  mixed  $conditions The data for the operator.
-     * @return string              Returns a SQL string.
+     * @param  array  $conditions The data for the operator.
+     * @param  array  $states     The current states..
+     * @return string             Returns a SQL string.
      */
     protected function _operator($operator, $conditions, $states)
     {
@@ -507,6 +528,12 @@ class Dialect
         return $builder($operator, $parts);
     }
 
+    /**
+     * Checks whether a string is an operator or not.
+     *
+     * @param  string  $operator The operator name.
+     * @return boolean           Returns `true` is the passed string is an operator, `false` otherwise.
+     */
     public function isOperator($operator)
     {
         return ($operator && $operator[0] === ':') || isset($this->_operators[$operator]);
@@ -515,9 +542,9 @@ class Dialect
     /**
      * Build a formated array of SQL statement.
      *
-     * @param  string $key    The field name.
-     * @param  mixed  $value  The data value.
-     * @return array          Returns a array of SQL string.
+     * @param  array $conditions A array of conditions.
+     * @param  array $states     The states.
+     * @return array             Returns a array of SQL string.
      */
     protected function _conditions($conditions, $states)
     {
@@ -544,8 +571,9 @@ class Dialect
     /**
      * Build a <fieldname> = <value> SQL condition.
      *
-     * @param  string $name    The field name.
+     * @param  string $name   The field name.
      * @param  mixed  $value  The data value.
+     * @param  array  $states The current states.
      * @return string         Returns a SQL string.
      */
     protected function _name($name, $value, &$states)
@@ -578,7 +606,7 @@ class Dialect
      *
      * @param  string $operator The format operator.
      * @param  mixed  $value    The value to format.
-     * @param  string $type     The value type.
+     * @param  array  $states   The current states.
      * @return string           Returns a SQL string.
      */
     public function format($operator, $value, $states = [])
@@ -593,9 +621,8 @@ class Dialect
     /**
      * Escapes a column/table/schema with dotted syntax support.
      *
-     * @param  string $name  Identifier name.
-     * @param  string $alias The filled alias name if present.
-     * @return string        The escaped identifien.
+     * @param  string $name The identifier name.
+     * @return string       The escaped identifier.
      */
     public function name($name)
     {
@@ -609,8 +636,8 @@ class Dialect
     /**
      * Escapes a column/table/schema name.
      *
-     * @param  string $name Identifier name.
-     * @return string
+     * @param  string $name The identifier name.
+     * @return string       The escaped identifier.
      */
     public function escape($name)
     {
@@ -621,7 +648,7 @@ class Dialect
      * Split dotted syntax into distinct name.
      *
      * @param  string $field A dotted identifier.
-     * @return array
+     * @return array         The parts.
      */
     public function undot($field)
     {
@@ -632,10 +659,10 @@ class Dialect
     }
 
     /**
-     * Quote a string.
+     * Quotes a string.
      *
      * @param  string $string The string to quote.
-     * @return string
+     * @return string         The quoted string.
      */
     public function quote($string)
     {
@@ -656,8 +683,8 @@ class Dialect
     /**
      * Converts a given value into the proper type based on a given schema definition.
      *
-     * @param  mixed  $value The value to be converted. Arrays will be recursively converted.
-     * @param  string $type  The value type.
+     * @param  mixed $value  The value to be converted. Arrays will be recursively converted.
+     * @param  array $states The current states.
      * @return mixed         The formatted value.
      */
     public function value($value, $states = [])
@@ -732,9 +759,10 @@ class Dialect
     /**
      * Builds a column/table meta.
      *
+     * @param  string $type  The meta type.
      * @param  array  $data  The meta data.
-     * @param  array  $names If `$names` is not `null` only build meta present in `$names`
-     * @return string        The SQL meta
+     * @param  array  $names If `$names` is not `null` only build meta present in `$names`.
+     * @return string        The SQL meta.
      */
     public function meta($type, $data, $names = null)
     {
@@ -754,8 +782,8 @@ class Dialect
      *
      * @param  string $type  The type of the meta to build (possible values: 'table' or 'column')
      * @param  string $name  The name of the meta to build
-     * @param  mixed  $value The value used for building the meta
-     * @return string        The SQL meta string
+     * @param  mixed  $value The meta value.
+     * @return string        The SQL meta.
      */
     protected function _meta($type, $name, $value)
     {
@@ -775,9 +803,10 @@ class Dialect
     /**
      * Build a SQL column constraint
      *
-     * @param  string $name  The name of the meta to build.
-     * @param  mixed  $value The value used for building the meta.
-     * @return string        The SQL meta string.
+     * @param  string $name       The name of the meta to build.
+     * @param  mixed  $constraint The constraint value.
+     * @param  array  $options    The constraint options.
+     * @return string             The SQL meta string.
      */
     public function constraint($name, $value, $options = [])
     {

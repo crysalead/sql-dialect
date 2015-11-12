@@ -24,7 +24,7 @@ class DropTable extends \sql\Statement
      * Sets the requirements on the table existence.
      *
      * @param  boolean $ifExists If `false` the table must exists, use `true` for a soft drop.
-     * @return object          Returns `$this`.
+     * @return object            Returns `$this`.
      */
     public function ifExists($ifExists = true)
     {

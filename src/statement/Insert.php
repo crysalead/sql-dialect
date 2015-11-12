@@ -23,8 +23,8 @@ class Insert extends \sql\Statement
     /**
      * Sets the `INTO` clause value.
      *
-     * @param  string|array $into The table name.
-     * @return object              Returns `$this`.
+     * @param  string $into The table name.
+     * @return object       Returns `$this`.
      */
     public function into($into)
     {

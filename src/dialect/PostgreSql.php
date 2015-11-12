@@ -68,12 +68,10 @@ class PostgreSql extends \sql\Dialect
                 'drop table'   => 'sql\statement\DropTable'
             ],
             'operators' => [
-                ':regex'          => ['format' => '%s ~ %s'],
-                ':regexi'         => ['format' => '%s ~* %s'],
-                ':not regex'      => ['format' => '%s !~ %s'],
-                ':not regexi'     => ['format' => '%s !~* %s'],
-                ':similar to'     => [],
-                ':not similar to' => [],
+                ':regexp'         => ['format' => '%s ~ %s'],
+                ':regexpi'        => ['format' => '%s ~* %s'],
+                ':not regexp'     => ['format' => '%s !~ %s'],
+                ':not regexpi'    => ['format' => '%s !~* %s'],
                 ':square root'    => ['format' => '|/ %s'],
                 ':cube root'      => ['format' => '||/ %s'],
                 ':fact'           => ['format' => '!! %s'],
@@ -82,10 +80,7 @@ class PostgreSql extends \sql\Dialect
                 '!!'              => ['format' => '!! %s'],
                 ':concat'         => ['format' => '%s || %s'],
                 ':pow'            => ['format' => '%s ^ %s'],
-                '#'               => [],
                 '@'               => ['format' => '@ %s'],
-                '<@'              => [],
-                '@>'              => [],
                 // Algebraic operations
                 ':union'          => ['builder' => 'set'],
                 ':union all'      => ['builder' => 'set'],

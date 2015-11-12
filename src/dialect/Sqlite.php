@@ -75,15 +75,10 @@ class Sqlite extends \sql\Dialect
                 'drop table'   => 'sql\statement\DropTable'
             ],
             'operators' => [
-                '#'            => ['format' => '%s ^ %s'],
-                ':regex'       => ['format' => '%s REGEXP %s'],
-                ':rlike'       => [],
-                ':sounds like' => [],
                 // Algebraic operations
                 ':union'       => ['builder' => 'set'],
                 ':union all'   => ['builder' => 'set'],
-                ':minus'       => ['builder' => 'set'],
-                ':except'      => ['name' => 'MINUS', 'type' => 'set']
+                ':except'      => ['builder' => 'set']
             ]
         ];
         $config = Set::merge($defaults, $config);

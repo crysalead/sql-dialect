@@ -87,14 +87,11 @@ class MySql extends \sql\Dialect
             ],
             'operators' => [
                 '#'            => ['format' => '%s ^ %s'],
-                ':regex'       => ['format' => '%s REGEXP %s'],
-                ':rlike'       => [],
-                ':sounds like' => [],
                 // Algebraic operations
                 ':union'       => ['builder' => 'set'],
                 ':union all'   => ['builder' => 'set'],
                 ':minus'       => ['builder' => 'set'],
-                ':except'      => ['name' => 'MINUS', 'type' => 'set']
+                ':except'      => ['name' => 'MINUS', 'builder' => 'set']
             ]
         ];
         $config = Set::merge($defaults, $config);

@@ -207,6 +207,20 @@ describe("Sqlite Dialect", function() {
 
             });
 
+            it("generates a varchar column with charset & collate", function() {
+
+                $data = [
+                    'name' => 'fieldname',
+                    'type' => 'string',
+                    'length' => 32,
+                    'null' => false,
+                    'collate' => 'NOCASE'
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('"fieldname" varchar(32) COLLATE \'NOCASE\' NOT NULL');
+
+            });
+
         });
 
         context("with a float column", function() {

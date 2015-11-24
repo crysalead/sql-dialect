@@ -500,7 +500,7 @@ describe("Dialect", function() {
 
     });
 
-    describe("->map()", function() {
+    describe("->map/mapped()", function() {
 
         it("gets/sets type matching", function() {
 
@@ -527,27 +527,17 @@ describe("Dialect", function() {
 
         });
 
-        it("throws an exception when options can't many any type", function() {
+        it("returns the default type when options can't match an existing type options", function() {
 
             $this->dialect->map('tinyint', 'boolean', ['length' => 1]);
 
-            $closure = function() {
-                $this->dialect->mapped(['use' => 'tinyint', 'length'  => 3]);
-            };
-            expect($closure)->toThrow(new SqlException("No type matching has been defined for `'tinyint'`."));
+            expect($this->dialect->mapped(['use' => 'tinyint', 'length'  => 3]))->toBe("string");
 
         });
 
-    });
+        it("returns the default type for unexisting types", function() {
 
-    describe("->mapped()", function() {
-
-        it("throws an exception if there's no type matching defined", function() {
-
-            $closure = function() {
-                $this->dialect->mapped('real');
-            };
-            expect($closure)->toThrow(new SqlException("No type matching has been defined for `'real'`."));
+            expect($this->dialect->mapped('real'))->toBe("string");
 
         });
 

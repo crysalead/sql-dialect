@@ -307,7 +307,7 @@ class Dialect
         }
 
         if (!isset($this->_maps[$use])) {
-            throw new SqlException("No type matching has been defined for `'{$use}'`.");
+            return 'string';
         }
 
         foreach ($this->_maps[$use] as $type => $value) {
@@ -315,7 +315,7 @@ class Dialect
                 return $type;
             }
         }
-        throw new SqlException("No type matching has been defined for `'{$use}'`.");
+        return 'string';
     }
 
     /**

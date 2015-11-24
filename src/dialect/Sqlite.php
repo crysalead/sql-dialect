@@ -77,7 +77,7 @@ class Sqlite extends \sql\Dialect
         $this->type('integer',  ['use' => 'integer']);
         $this->type('boolean',  ['use' => 'boolean']);
         $this->type('float',    ['use' => 'real']);
-        $this->type('decimal',  ['use' => 'text', 'precision' => 2]);
+        $this->type('decimal',  ['use' => 'numeric', 'precision' => 2]);
         $this->type('date',     ['use' => 'date']);
         $this->type('time',     ['use' => 'time']);
         $this->type('datetime', ['use' => 'timestamp']);

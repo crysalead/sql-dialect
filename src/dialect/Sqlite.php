@@ -77,7 +77,7 @@ class Sqlite extends \sql\Dialect
         $this->type('integer',  ['use' => 'integer']);
         $this->type('boolean',  ['use' => 'boolean']);
         $this->type('float',    ['use' => 'real']);
-        $this->type('decimal',  ['use' => 'numeric', 'precision' => 2]);
+        $this->type('decimal',  ['use' => 'decimal', 'precision' => 2]);
         $this->type('date',     ['use' => 'date']);
         $this->type('time',     ['use' => 'time']);
         $this->type('datetime', ['use' => 'timestamp']);
@@ -87,7 +87,7 @@ class Sqlite extends \sql\Dialect
         $this->map('blob',      'binary');
         $this->map('date',      'date');
         $this->map('integer',   'integer');
-        $this->map('numeric',   'decimal', ['precision' => 2]);
+        $this->map('decimal',   'decimal', ['precision' => 2]);
         $this->map('real',      'float');
         $this->map('text',      'text');
         $this->map('time',      'time');

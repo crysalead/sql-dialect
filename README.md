@@ -30,7 +30,7 @@ To ask questions, provide feedback or otherwise communicate with the team, join 
 Let's start by instantiating a `MySql` dialect class:
 
 ```php
-use sql\dialect\MySql;
+use Lead\Sql\Dialect\MySql;
 
 $dialect = new MySql();
 ```
@@ -67,7 +67,7 @@ By default string values are automatically quoted, however some database connect
 
 ```php
 use PDO;
-use sql\dialect\PostgreSql;
+use Lead\Sql\Dialect\PostgreSql;
 
 $connection = new DBConnection($dsn, $user, $password);
 $dialect = new PostgreSql(['quoter' => function($string) use ($connection){

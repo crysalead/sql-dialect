@@ -3,22 +3,22 @@
     "description": "SQL query builder.",
     "keywords": ["SQL", "Database", "Query", "MySQL", "PostgreSQL"],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "CrysaLEAD"
-        }
-    ],
     "require": {
         "php": ">=5.5",
-        "crysalead/text": "~1.0",
-        "crysalead/set": "~1.0"
+        "crysalead/text": "~2.0",
+        "crysalead/set": "~2.0"
     },
     "require-dev": {
-        "crysalead/kahlan": "~1.1"
+        "crysalead/kahlan": "~2.0"
     },
     "autoload": {
         "psr-4": {
-            "sql\\": "src/"
+            "Lead\\Sql\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lead\\Sql\\Spec\\": "spec/"
         }
     },
     "config": {

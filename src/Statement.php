@@ -1,7 +1,7 @@
 <?php
-namespace sql;
+namespace Lead\Sql;
 
-use sql\SqlException;
+use Lead\Sql\SqlException;
 
 /**
  * Statement

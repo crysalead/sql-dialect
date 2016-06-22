@@ -515,10 +515,9 @@ class Dialect
         } else {
             throw new SqlException("Unexisting operator `'{$operator}'`.");
         }
-
         $parts = $this->_conditions($conditions, $states);
 
-        $operator = (is_array($parts) && next($parts) === null && isset($config['null'])) ? $config['null'] : $operator;
+        $operator = (is_array($parts) && next($parts) === 'NULL' && isset($config['null'])) ? $config['null'] : $operator;
         $operator = $operator[0] === ':' ? strtoupper(substr($operator, 1)) : $operator;
 
         if (!isset($config['builder'])) {
@@ -585,7 +584,7 @@ class Dialect
         $states['schema'] = $schema;
 
         if (!is_array($value)) {
-            return "{$escaped} = " . $this->value($value, $states);
+            return $this->_operator('=', [[':name' => $name], $value], $states);
         }
 
         $operator = strtolower(key($value));
@@ -693,6 +692,8 @@ class Dialect
             return $caster($value, $states);
         }
         switch (true) {
+            case is_null($value):
+                return 'NULL';
             case is_bool($value):
                 return $value ? 'TRUE' : 'FALSE';
             case is_string($value):

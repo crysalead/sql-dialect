@@ -310,6 +310,33 @@ describe("Dialect", function() {
 
         });
 
+        it("generates IS expression", function() {
+
+            $part = $this->dialect->conditions([
+                ':is' => [[':name' => 'score'], null]
+            ]);
+            expect($part)->toBe('"score" IS NULL');
+
+        });
+
+        it("generates a IS expression using the short syntax", function() {
+
+            $part = $this->dialect->conditions([
+                'score' => null
+            ]);
+            expect($part)->toBe('"score" IS NULL');
+
+        });
+
+        it("generates IS NOT expression", function() {
+
+            $part = $this->dialect->conditions([
+                ':is not' => [[':name' => 'score'], null]
+            ]);
+            expect($part)->toBe('"score" IS NOT NULL');
+
+        });
+
         it("generates a IN expression using the short syntax", function() {
 
             $part = $this->dialect->conditions([

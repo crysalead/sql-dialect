@@ -9,6 +9,13 @@ use Lead\Sql\SqlException;
 class Update extends \Lead\Sql\Statement
 {
     /**
+     * The type detector callable.
+     *
+     * @var callable
+     */
+    protected $_type = null;
+
+    /**
      * The SQL parts.
      *
      * @var string
@@ -38,12 +45,14 @@ class Update extends \Lead\Sql\Statement
     /**
      * Sets the `UPDATE` values.
      *
-     * @param  string|array $values The record values to insert.
-     * @return object               Returns `$this`.
+     * @param  string|array $values   The record values to insert.
+     * @param  callable     $callable The type detector callable.
+     * @return object                 Returns `$this`.
      */
-    public function values($values)
+    public function values($values, $callable = null)
     {
         $this->_parts['values'] = $values;
+        $this->_type = $callable;
         return $this;
     }
 
@@ -80,8 +89,10 @@ class Update extends \Lead\Sql\Statement
     protected function _buildSet()
     {
         $values = [];
+        $states =  $this->_type ? ['type' => $this->_type] : [];
         foreach ($this->_parts['values'] as $key => $value) {
-            $values[] = $this->dialect()->name($key) . ' = ' . $this->dialect()->value($value);
+            $states['name'] = $key;
+            $values[] = $this->dialect()->name($key) . ' = ' . $this->dialect()->value($value, $states);
         }
         return $values ? ' SET ' . join(', ', $values) : '';
     }

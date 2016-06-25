@@ -9,6 +9,13 @@ use Lead\Sql\SqlException;
 class Insert extends \Lead\Sql\Statement
 {
     /**
+     * The type detector callable.
+     *
+     * @var callable
+     */
+    protected $_type = null;
+
+    /**
      * The SQL parts.
      *
      * @var string
@@ -35,12 +42,14 @@ class Insert extends \Lead\Sql\Statement
     /**
      * Sets the `INSERT` values.
      *
-     * @param  string|array $values The record values to insert.
-     * @return object               Returns `$this`.
+     * @param  string|array $values   The record values to insert.
+     * @param  callable     $callable The type detector callable.
+     * @return object                 Returns `$this`.
      */
-    public function values($values)
+    public function values($values, $callable = null)
     {
         $this->_parts['values'] = $values;
+        $this->_type = $callable;
         return $this;
     }
 
@@ -63,8 +72,23 @@ class Insert extends \Lead\Sql\Statement
             $this->_buildFlags($this->_parts['flags']) .
             $this->_buildClause('INTO', $this->dialect()->name($this->_parts['into'], true)) .
             $this->_buildChunk('(' . $this->dialect()->names($fields, true) . ')', false) .
-            $this->_buildChunk('VALUES (' . join(', ', array_map([$this->dialect(), 'value'], $values)) . ')') .
+            $this->_buildValues() .
             $this->_buildClause('RETURNING', $this->dialect()->names($this->_parts['returning'], false, ''));
     }
 
+    /**
+     * Build `VALUES` clause.
+     *
+     * @return string Returns the `VALUES` clause.
+     */
+    protected function _buildValues()
+    {
+        $values = [];
+        $states =  $this->_type ? ['type' => $this->_type] : [];
+        foreach ($this->_parts['values'] as $key => $value) {
+            $states['name'] = $key;
+            $values[] = $this->dialect()->value($value, $states);
+        }
+        return ' VALUES (' . join(', ', $values) . ')';
+    }
 }

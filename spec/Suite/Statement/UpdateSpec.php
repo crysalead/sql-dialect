@@ -49,6 +49,28 @@ describe("Update", function() {
 
     });
 
+    describe("->values()", function() {
+
+        it("assures the custom casting handler is correctly called if set", function() {
+
+            $getType = function($field){};
+
+            $caster = function($value, $states) use ($getType) {
+              expect($states['name'])->toBe('field');
+              expect($states['type'])->toBe($getType);
+              expect($value)->toBe('value');
+              return "'casted'";
+            };
+
+            $this->dialect->caster($caster);
+            $this->update->table('table')->values(['field' => 'value'], $getType);
+
+            expect($this->update->toString())->toBe('UPDATE "table" SET "field" = \'casted\'');
+
+        });
+
+    });
+
     describe("->where()", function() {
 
         it("sets a `WHERE` clause", function() {

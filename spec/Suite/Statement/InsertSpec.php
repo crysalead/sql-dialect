@@ -38,11 +38,33 @@ describe("Insert", function() {
 
     });
 
+    describe("->values()", function() {
+
+        it("assures the custom casting handler is correctly called if set", function() {
+
+            $getType = function($field){};
+
+            $caster = function($value, $states) use ($getType) {
+              expect($states['name'])->toBe('field');
+              expect($states['type'])->toBe($getType);
+              expect($value)->toBe('value');
+              return "'casted'";
+            };
+
+            $this->dialect->caster($caster);
+            $this->insert->into('table')->values(['field' => 'value'], $getType);
+
+            expect($this->insert->toString())->toBe('INSERT INTO "table" ("field") VALUES (\'casted\')');
+
+        });
+
+    });
+
     describe("->__toString()" , function() {
 
         it("casts object to string query", function() {
 
-            $this->insert->into('table')->values(['field' => 'value']);;
+            $this->insert->into('table')->values(['field' => 'value']);
             $query = 'INSERT INTO "table" ("field") VALUES (\'value\')';
             expect($this->insert)->not->toBe($query);
             expect((string) $this->insert)->toBe($query);

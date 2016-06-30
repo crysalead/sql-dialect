@@ -705,7 +705,7 @@ class Dialect
                         if (is_array($v)) {
                             $result[] = $cast($v);
                         } else {
-                            $result[] = $v;
+                            $result[] = $this->value($v);
                         }
                     }
                     return '{' . join(',', $result) . '}';

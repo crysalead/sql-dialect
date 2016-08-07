@@ -48,7 +48,7 @@ class Insert extends \Lead\Sql\Statement
      */
     public function values($values, $callable = null)
     {
-        $this->_parts['values'] = $values;
+        $this->_parts['values'][] = $values;
         $this->_type = $callable;
         return $this;
     }
@@ -65,8 +65,7 @@ class Insert extends \Lead\Sql\Statement
             throw new SqlException("Invalid `INSERT` statement, missing `INTO` clause.");
         }
 
-        $fields = array_keys($this->_parts['values']);
-        $values = array_values($this->_parts['values']);
+        $fields = count($this->_parts['values']) ? array_keys($this->_parts['values'][0]) : [];
 
         return 'INSERT' .
             $this->_buildFlags($this->_parts['flags']) .
@@ -83,12 +82,16 @@ class Insert extends \Lead\Sql\Statement
      */
     protected function _buildValues()
     {
-        $values = [];
         $states =  $this->_type ? ['type' => $this->_type] : [];
-        foreach ($this->_parts['values'] as $key => $value) {
-            $states['name'] = $key;
-            $values[] = $this->dialect()->value($value, $states);
+        $parts = [];
+        foreach ($this->_parts['values'] as $values) {
+            $data = [];
+            foreach ($values as $key => $value) {
+                $states['name'] = $key;
+                $data[] = $this->dialect()->value($value, $states);
+            }
+            $parts[] = '(' . join(', ', $data) . ')';
         }
-        return ' VALUES (' . join(', ', $values) . ')';
+        return ' VALUES ' . join(', ',$parts);
     }
 }

@@ -10,7 +10,7 @@ This library provides query builders independent of any particular database conn
 
 * Supports MySQL and PostgreSQL
 * Uses the [prefix notation](https://en.wikipedia.org/wiki/Polish_notation) for building queries
-* Supports `SELECT`, `UPDATE`, `INSERT` and `DELETE`
+* Supports `SELECT`, `UPDATE`, `INSERT`, `DELETE` and `TRUNCATE`
 * Supports `CREATE TABLE` and `DROP TABLE`
 
 ## Community
@@ -43,6 +43,7 @@ $select = $dialect->statement('select');
 $insert = $dialect->statement('insert');
 $update = $dialect->statement('update');
 $delete = $dialect->statement('delete');
+$delete = $dialect->statement('truncate');
 
 $createTable = $dialect->statement('create table');
 $dropTable = $dialect->statement('drop table');
@@ -374,6 +375,16 @@ $delete = $dialect->statement('delete');
 $delete
     ->from('table')                 // FROM
     ->where(['id' => 123]);         // WHERE
+```
+
+### TRUNCATE
+
+Example of `TRUNCATE` query:
+
+```php
+$truncate = $dialect->statement('truncate');
+
+$truncate->table('table');           // TABLE
 ```
 
 ### CREATE TABLE

@@ -94,6 +94,7 @@ class Dialect
                 'insert'       => 'Lead\Sql\Statement\Insert',
                 'update'       => 'Lead\Sql\Statement\Update',
                 'delete'       => 'Lead\Sql\Statement\Delete',
+                'truncate'     => 'Lead\Sql\Statement\Truncate',
                 'create table' => 'Lead\Sql\Statement\CreateTable',
                 'drop table'   => 'Lead\Sql\Statement\DropTable'
             ],

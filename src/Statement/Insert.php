@@ -2,12 +2,15 @@
 namespace Lead\Sql\Statement;
 
 use Lead\Sql\SqlException;
+use Lead\Sql\Statement\Behavior\HasFlags;
 
 /**
  * INSERT statement.
  */
 class Insert extends \Lead\Sql\Statement
 {
+    use HasFlags;
+
     /**
      * The type detector callable.
      *

@@ -2,12 +2,18 @@
 namespace Lead\Sql\Statement;
 
 use Lead\Sql\SqlException;
+use Lead\Sql\Statement\Behavior\HasFlags;
+use Lead\Sql\Statement\Behavior\HasWhere;
+use Lead\Sql\Statement\Behavior\HasOrder;
+use Lead\Sql\Statement\Behavior\HasLimit;
 
 /**
  * `UPDATE` statement.
  */
 class Update extends \Lead\Sql\Statement
 {
+    use HasFlags, HasWhere, HasOrder, HasLimit;
+
     /**
      * The type detector callable.
      *

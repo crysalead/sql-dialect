@@ -2,12 +2,18 @@
 namespace Lead\Sql\Statement;
 
 use Lead\Sql\SqlException;
+use Lead\Sql\Statement\Behavior\HasFlags;
+use Lead\Sql\Statement\Behavior\HasWhere;
+use Lead\Sql\Statement\Behavior\HasOrder;
+use Lead\Sql\Statement\Behavior\HasLimit;
 
 /**
  * `DELETE` statement.
  */
 class Delete extends \Lead\Sql\Statement
 {
+    use HasFlags, HasWhere, HasOrder, HasLimit;
+
     /**
      * The SQL parts.
      *

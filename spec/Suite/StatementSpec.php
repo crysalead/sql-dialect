@@ -4,12 +4,25 @@ namespace Lead\Sql\Spec\Suite;
 use Lead\Sql\SqlException;
 use Lead\Sql\Statement;
 
+use Lead\Sql\Statement\Behavior\HasFlags;
+use Lead\Sql\Statement\Behavior\HasWhere;
+use Lead\Sql\Statement\Behavior\HasOrder;
+use Lead\Sql\Statement\Behavior\HasLimit;
+
 use Kahlan\Plugin\Stub;
 
 describe("Statement", function() {
 
     beforeEach(function() {
-        $this->statement = new Statement();
+        $this->statement = Stub::create([
+            'extends' => Statement::class,
+            'uses'    => [
+                HasFlags::class,
+                HasWhere::class,
+                HasOrder::class,
+                HasLimit::class
+            ]
+        ]);
     });
 
     describe("->dialect()", function() {
@@ -64,7 +77,7 @@ describe("Statement", function() {
             $closure = function() {
                 $this->statement->undefined();
             };
-            expect($closure)->toThrow(new SqlException("Invalid clause `undefined` for `Lead\\Sql\\Statement`."));
+            expect($closure)->toThrow(new SqlException("~Invalid clause `undefined`.*~"));
 
         });
 

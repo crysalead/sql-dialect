@@ -9,7 +9,7 @@
         "crysalead/set": "~2.0"
     },
     "require-dev": {
-        "crysalead/kahlan": "~2.0"
+        "kahlan/kahlan": "~3.0"
     },
     "autoload": {
         "psr-4": {
@@ -23,6 +23,5 @@
     },
     "config": {
         "bin-dir": "bin"
-    },
-    "minimum-stability": "dev"
+    }
 }

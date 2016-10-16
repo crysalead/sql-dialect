@@ -9,12 +9,12 @@ use Lead\Sql\Statement\Behavior\HasWhere;
 use Lead\Sql\Statement\Behavior\HasOrder;
 use Lead\Sql\Statement\Behavior\HasLimit;
 
-use Kahlan\Plugin\Stub;
+use Kahlan\Plugin\Double;
 
 describe("Statement", function() {
 
     beforeEach(function() {
-        $this->statement = Stub::create([
+        $this->statement = Double::instance([
             'extends' => Statement::class,
             'uses'    => [
                 HasFlags::class,
@@ -29,7 +29,7 @@ describe("Statement", function() {
 
         it("gets/sets a dialect", function() {
 
-            $dialect = Stub::create();
+            $dialect = Double::instance();
             $this->statement->dialect($dialect);
             expect($this->statement->dialect())->toBe($dialect);
 

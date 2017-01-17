@@ -42,6 +42,27 @@ describe("Delete", function() {
 
         });
 
+        it("assures the custom casting handler is correctly called if set", function() {
+
+            $getType = function($field) {
+                if ($field === 'field') {
+                    return 'fieldType';
+                }
+            };
+
+            $caster = function($value, $states) use ($getType) {
+              $type = $states['schema']($states['name']);
+              return $type === 'fieldType' ? "'casted'" : $value;
+            };
+
+            $this->dialect->caster($caster);
+            $delete = $this->dialect->statement('delete', ['schema' => $getType]);
+            $delete->from('table')->where(['field' => 'value']);
+
+            expect($delete->toString())->toBe('DELETE FROM "table" WHERE "field" = \'casted\'');
+
+        });
+
     });
 
     describe("->order()", function() {

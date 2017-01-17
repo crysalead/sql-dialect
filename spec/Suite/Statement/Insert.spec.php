@@ -59,15 +59,16 @@ describe("Insert", function() {
 
             $caster = function($value, $states) use ($getType) {
               expect($states['name'])->toBe('field');
-              expect($states['type'])->toBe($getType);
+              expect($states['schema'])->toBe($getType);
               expect($value)->toBe('value');
               return "'casted'";
             };
 
             $this->dialect->caster($caster);
-            $this->insert->into('table')->values(['field' => 'value'], $getType);
+            $insert = $this->dialect->statement('insert', ['schema' => $getType]);
+            $insert->into('table')->values(['field' => 'value']);
 
-            expect($this->insert->toString())->toBe('INSERT INTO "table" ("field") VALUES (\'casted\')');
+            expect($insert->toString())->toBe('INSERT INTO "table" ("field") VALUES (\'casted\')');
 
         });
 

@@ -133,10 +133,10 @@ describe("PostgreSql CreateTable", function() {
                 $dialect = $this->dialect;
 
                 $dialect->caster(function($value, $states) use ($dialect) {
-                    $type = isset($states['type']) ? $states['type'] : gettype($value);
-                    if (is_array($type)) {
-                        $type = call_user_func($type, $states['name']);
+                    if (!empty($states['schema'])) {
+                        $type = $states['schema']->type($states['name']);
                     }
+                    $type = !empty($type) ? $type : gettype($value);
                     switch ($type) {
                         case 'integer':
                             return (int) $value;

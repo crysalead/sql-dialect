@@ -15,11 +15,11 @@ class Update extends \Lead\Sql\Statement
     use HasFlags, HasWhere, HasOrder, HasLimit;
 
     /**
-     * The type detector callable.
+     * The schema.
      *
-     * @var callable
+     * @var mixed
      */
-    protected $_type = null;
+    protected $_schema = null;
 
     /**
      * The SQL parts.
@@ -35,6 +35,20 @@ class Update extends \Lead\Sql\Statement
         'limit'     => '',
         'returning' => []
     ];
+
+    /**
+     * Constructor
+     *
+     * @param array $config The config array. The option is:
+     *                       - 'schema' object the Schema instance to use.
+     */
+    public function __construct($config = [])
+    {
+        $defaults = ['schema' => null];
+        $config += $defaults;
+        parent::__construct($config);
+        $this->_schema = $config['schema'];
+    }
 
     /**
      * Sets the table name to create.
@@ -55,10 +69,9 @@ class Update extends \Lead\Sql\Statement
      * @param  callable     $callable The type detector callable.
      * @return object                 Returns `$this`.
      */
-    public function values($values, $callable = null)
+    public function values($values)
     {
         $this->_parts['values'] = $values;
-        $this->_type = $callable;
         return $this;
     }
 
@@ -81,7 +94,9 @@ class Update extends \Lead\Sql\Statement
             $this->_buildFlags($this->_parts['flags']) .
             $this->_buildChunk($this->dialect()->names($this->_parts['table'])) .
             $this->_buildSet() .
-            $this->_buildClause('WHERE', $this->dialect()->conditions($this->_parts['where'])) .
+            $this->_buildClause('WHERE', $this->dialect()->conditions($this->_parts['where'], [
+                'schemas' => ['' => $this->_schema]
+            ])) .
             $this->_buildOrder() .
             $this->_buildClause('LIMIT', $this->_parts['limit']) .
             $this->_buildClause('RETURNING', $this->dialect()->names($this->_parts['returning']));
@@ -95,7 +110,7 @@ class Update extends \Lead\Sql\Statement
     protected function _buildSet()
     {
         $values = [];
-        $states =  $this->_type ? ['type' => $this->_type] : [];
+        $states =  $this->_schema ? ['schema' => $this->_schema] : [];
         foreach ($this->_parts['values'] as $key => $value) {
             $states['name'] = $key;
             $values[] = $this->dialect()->name($key) . ' = ' . $this->dialect()->value($value, $states);

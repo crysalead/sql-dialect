@@ -57,15 +57,16 @@ describe("Update", function() {
 
             $caster = function($value, $states) use ($getType) {
               expect($states['name'])->toBe('field');
-              expect($states['type'])->toBe($getType);
+              expect($states['schema'])->toBe($getType);
               expect($value)->toBe('value');
               return "'casted'";
             };
 
             $this->dialect->caster($caster);
-            $this->update->table('table')->values(['field' => 'value'], $getType);
+            $update = $this->dialect->statement('update', ['schema' => $getType]);
+            $update->table('table')->values(['field' => 'value']);
 
-            expect($this->update->toString())->toBe('UPDATE "table" SET "field" = \'casted\'');
+            expect($update->toString())->toBe('UPDATE "table" SET "field" = \'casted\'');
 
         });
 
@@ -81,6 +82,27 @@ describe("Update", function() {
                 ->where([true]);
 
             expect($this->update->toString())->toBe('UPDATE "table" SET "field" = \'value\' WHERE TRUE');
+
+        });
+
+        it("assures the custom casting handler is correctly called if set", function() {
+
+            $getType = function($field) {
+                if ($field === 'field') {
+                    return 'fieldType';
+                }
+            };
+
+            $caster = function($value, $states) use ($getType) {
+              $type = $states['schema']($states['name']);
+              return $type === 'fieldType' ? "'casted'" : $value;
+            };
+
+            $this->dialect->caster($caster);
+            $update = $this->dialect->statement('update', ['schema' => $getType]);
+            $update->table('table')->values(['field' => 'value'])->where(['field' => 'value']);
+
+            expect($update->toString())->toBe('UPDATE "table" SET "field" = \'casted\' WHERE "field" = \'casted\'');
 
         });
 

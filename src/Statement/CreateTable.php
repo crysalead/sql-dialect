@@ -77,7 +77,7 @@ class CreateTable extends \Lead\Sql\Statement
      */
     public function constraints($constraints)
     {
-        $this->_parts['constraints'] =  $constraints;
+        $this->_parts['constraints'] = $constraints;
         return $this;
     }
 
@@ -153,7 +153,7 @@ class CreateTable extends \Lead\Sql\Statement
                 throw new SqlException("Missing contraint type.");
             }
             $type = $constraint['type'];
-            if ($meta = $this->dialect()->constraint($type, $constraint, ['type' => [$this, 'type']])) {
+            if ($meta = $this->dialect()->constraint($type, $constraint, ['schemas' => ['' => $this]])) {
                 $result[] = $meta;
             }
             if ($type === 'primary') {

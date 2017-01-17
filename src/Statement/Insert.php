@@ -12,11 +12,11 @@ class Insert extends \Lead\Sql\Statement
     use HasFlags;
 
     /**
-     * The type detector callable.
+     * The schema.
      *
-     * @var callable
+     * @var mixed
      */
-    protected $_type = null;
+    protected $_schema = null;
 
     /**
      * The SQL parts.
@@ -29,6 +29,20 @@ class Insert extends \Lead\Sql\Statement
         'values'    => [],
         'returning' => []
     ];
+
+    /**
+     * Constructor
+     *
+     * @param array $config The config array. The option is:
+     *                       - 'schema' object the Schema instance to use.
+     */
+    public function __construct($config = [])
+    {
+        $defaults = ['schema' => null];
+        $config += $defaults;
+        parent::__construct($config);
+        $this->_schema = $config['schema'];
+    }
 
     /**
      * Sets the `INTO` clause value.
@@ -49,10 +63,9 @@ class Insert extends \Lead\Sql\Statement
      * @param  callable     $callable The type detector callable.
      * @return object                 Returns `$this`.
      */
-    public function values($values, $callable = null)
+    public function values($values)
     {
         $this->_parts['values'][] = $values;
-        $this->_type = $callable;
         return $this;
     }
 
@@ -85,7 +98,7 @@ class Insert extends \Lead\Sql\Statement
      */
     protected function _buildValues()
     {
-        $states =  $this->_type ? ['type' => $this->_type] : [];
+        $states =  $this->_schema ? ['schema' => $this->_schema] : [];
         $parts = [];
         foreach ($this->_parts['values'] as $values) {
             $data = [];

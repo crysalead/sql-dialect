@@ -213,8 +213,13 @@ class Dialect
     protected function _defaultFormatters()
     {
         return [
-            ':name' => function ($value, $states) {
-                return $this->name($value);
+            ':name' => function ($value, &$states) {
+                list($alias, $field) = $this->undot($value);
+                $escaped = $this->name($value);
+                $schema = isset($states['schemas'][$alias]) ? $states['schemas'][$alias] : null;
+                $states['name'] = $field;
+                $states['schema'] = $schema;
+                return $escaped;
             },
             ':value' => function ($value, $states) {
                 return $this->value($value, $states);
@@ -507,7 +512,7 @@ class Dialect
      * @param  array  $states     The current states..
      * @return string             Returns a SQL string.
      */
-    protected function _operator($operator, $conditions, $states)
+    protected function _operator($operator, $conditions, &$states)
     {
         if (substr($operator, -2) === '()') {
             $config = ['builder' => 'function'];
@@ -546,7 +551,7 @@ class Dialect
      * @param  array $states     The states.
      * @return array             Returns a array of SQL string.
      */
-    protected function _conditions($conditions, $states)
+    protected function _conditions($conditions, &$states)
     {
         $parts = [];
         foreach ($conditions as $name => $value) {
@@ -576,7 +581,7 @@ class Dialect
      * @param  array  $states The current states.
      * @return string         Returns a SQL string.
      */
-    protected function _name($name, $value, &$states)
+    protected function _name($name, $value, $states)
     {
         list($alias, $field) = $this->undot($name);
         $escaped = $this->name($name);
@@ -609,7 +614,7 @@ class Dialect
      * @param  array  $states   The current states.
      * @return string           Returns a SQL string.
      */
-    public function format($operator, $value, $states = [])
+    public function format($operator, $value, &$states = [])
     {
         if (!isset($this->_formatters[$operator])) {
             throw new SqlException("Unexisting formatter `'{$operator}'`.");
@@ -655,7 +660,7 @@ class Dialect
         if (is_string($field) && (($pos = strrpos($field, ".")) !== false)) {
             return [substr($field, 0, $pos), substr($field, $pos + 1)];
         }
-        return [null, $field];
+        return ['', $field];
     }
 
     /**

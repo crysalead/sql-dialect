@@ -175,7 +175,8 @@ class PostgreSql extends \Lead\Sql\Dialect
                 } else {
                     $operator = ':value';
                 }
-                $result[] = 'DEFAULT ' . $this->format($operator, $default, compact('field'));
+                $states = compact('field');
+                $result[] = 'DEFAULT ' . $this->format($operator, $default, $states);
             }
         }
 

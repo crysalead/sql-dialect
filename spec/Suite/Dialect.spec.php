@@ -454,6 +454,51 @@ describe("Dialect", function() {
 
         });
 
+        it("applies casting strategy with correct params", function() {
+
+            $logs = [];
+
+            $defaultSchema = function(){};
+            $table1Schema = function(){};
+            $table2Schema = function(){};
+
+            $caster = function($value, $states) use (&$logs) {
+              $logs[] = $states;
+              return $value;
+            };
+
+            $this->dialect->caster($caster);
+
+            $result = $this->dialect->conditions([
+                ['!=' => [
+                    [':name' => 'value'], 789
+                ]],
+                [':or' => [
+                    ['<' => [
+                        [':name' => 'Table1.min'], 123
+                    ]],
+                    ['>' => [
+                        [':name' => 'Table2.max'], 456
+                    ]]
+                ]],
+                ['!=' => [
+                    [':name' => 'value'], 0
+                ]]
+            ], [ 'schemas' => [
+                '' => $defaultSchema,
+                'Table1' => $table1Schema,
+                'Table2' => $table2Schema
+            ]]);
+            expect($result)->toBe('"value" != 789 AND "Table1"."min" < 123 OR "Table2"."max" > 456 AND "value" != 0');
+
+            expect(count($logs))->toBe(4);
+            expect($logs[0]['schema'])->toBe($defaultSchema);
+            expect($logs[1]['schema'])->toBe($table1Schema);
+            expect($logs[2]['schema'])->toBe($table2Schema);
+            expect($logs[0]['schema'])->toBe($defaultSchema);
+
+        });
+
         context("with the alternative syntax", function() {
 
             it("generates a BETWEEN/NOT BETWEEN expression", function() {

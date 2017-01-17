@@ -514,10 +514,14 @@ class Dialect
      */
     protected function _operator($operator, $conditions, &$states)
     {
-        if (substr($operator, -2) === '()') {
-            $config = ['builder' => 'function'];
-        } else if (isset($this->_operators[$operator])) {
+        if (isset($this->_operators[$operator])) {
             $config = $this->_operators[$operator];
+        } elseif (substr($operator, -2) === '()') {
+            $op = substr($operator, 0, -2);
+            if (isset($this->_operators[$op])) {
+                return '(' . $this->_operator($op, $conditions, $states) . ')';
+            }
+            $config = ['builder' => 'function'];
         } else {
             throw new SqlException("Unexisting operator `'{$operator}'`.");
         }
@@ -526,11 +530,14 @@ class Dialect
         $operator = (is_array($parts) && next($parts) === 'NULL' && isset($config['null'])) ? $config['null'] : $operator;
         $operator = $operator[0] === ':' ? strtoupper(substr($operator, 1)) : $operator;
 
-        if (!isset($config['builder'])) {
-            return join(" {$operator} ", $parts);
+        if (isset($config['builder'])) {
+            $builder = $this->_builders[$config['builder']];
+            return $builder($operator, $parts);
         }
-        $builder = $this->_builders[$config['builder']];
-        return $builder($operator, $parts);
+        if (isset($config['format'])) {
+            return sprintf($config['format'], join(", ", $parts));
+        }
+        return join(" {$operator} ", $parts);
     }
 
     /**

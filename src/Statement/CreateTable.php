@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Statement;
+namespace Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\SqlException;
+use Lead\Sql\Dialect\SqlException;
 
 /**
  * `CREATE TABLE` statement.
  */
-class CreateTable extends \Lead\Sql\Statement
+class CreateTable extends \Lead\Sql\Dialect\Statement
 {
     /**
      * The SQL parts.

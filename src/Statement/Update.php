@@ -1,16 +1,16 @@
 <?php
-namespace Lead\Sql\Statement;
+namespace Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\SqlException;
-use Lead\Sql\Statement\Behavior\HasFlags;
-use Lead\Sql\Statement\Behavior\HasWhere;
-use Lead\Sql\Statement\Behavior\HasOrder;
-use Lead\Sql\Statement\Behavior\HasLimit;
+use Lead\Sql\Dialect\SqlException;
+use Lead\Sql\Dialect\Statement\Behavior\HasFlags;
+use Lead\Sql\Dialect\Statement\Behavior\HasWhere;
+use Lead\Sql\Dialect\Statement\Behavior\HasOrder;
+use Lead\Sql\Dialect\Statement\Behavior\HasLimit;
 
 /**
  * `UPDATE` statement.
  */
-class Update extends \Lead\Sql\Statement
+class Update extends \Lead\Sql\Dialect\Statement
 {
     use HasFlags, HasWhere, HasOrder, HasLimit;
 

@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\PostgreSql;
+namespace Lead\Sql\Dialect\Statement\PostgreSql;
 
 /**
  * `DELETE` statement.
  */
-class Delete extends \Lead\Sql\Statement\Delete
+class Delete extends \Lead\Sql\Dialect\Statement\Delete
 {
     /**
      * Sets some fields to the `RETURNING` clause.

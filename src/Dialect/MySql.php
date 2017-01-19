@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Dialect;
+namespace Lead\Sql\Dialect\Dialect;
 
 use Lead\Set\Set;
 
 /**
  * MySQL dialect.
  */
-class MySql extends \Lead\Sql\Dialect
+class MySql extends \Lead\Sql\Dialect\Dialect
 {
     /**
      * Escape identifier character.
@@ -64,12 +64,12 @@ class MySql extends \Lead\Sql\Dialect
     {
         $defaults = [
             'classes' => [
-                'select'       => 'Lead\Sql\Statement\MySql\Select',
-                'insert'       => 'Lead\Sql\Statement\MySql\Insert',
-                'update'       => 'Lead\Sql\Statement\MySql\Update',
-                'delete'       => 'Lead\Sql\Statement\MySql\Delete',
-                'create table' => 'Lead\Sql\Statement\CreateTable',
-                'drop table'   => 'Lead\Sql\Statement\DropTable'
+                'select'       => 'Lead\Sql\Dialect\Statement\MySql\Select',
+                'insert'       => 'Lead\Sql\Dialect\Statement\MySql\Insert',
+                'update'       => 'Lead\Sql\Dialect\Statement\MySql\Update',
+                'delete'       => 'Lead\Sql\Dialect\Statement\MySql\Delete',
+                'create table' => 'Lead\Sql\Dialect\Statement\CreateTable',
+                'drop table'   => 'Lead\Sql\Dialect\Statement\DropTable'
             ],
             'operators' => [
                 '#'            => ['format' => '%s ^ %s'],

@@ -1,7 +1,7 @@
 <?php
-namespace Lead\Sql\Spec\Suite\Statement\PostgreSql;
+namespace Lead\Sql\Dialect\Spec\Suite\Statement\PostgreSql;
 
-use Lead\Sql\Dialect\PostgreSql;
+use Lead\Sql\Dialect\Dialect\PostgreSql;
 
 describe("PostgreSql Delete", function() {
 

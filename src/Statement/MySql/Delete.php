@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\MySql;
+namespace Lead\Sql\Dialect\Statement\MySql;
 
 /**
  * `DELETE` statement.
  */
-class Delete extends \Lead\Sql\Statement\Delete
+class Delete extends \Lead\Sql\Dialect\Statement\Delete
 {
     /**
      * Sets `LOW_PRIORITY` flag.

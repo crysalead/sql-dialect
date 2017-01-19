@@ -1,8 +1,8 @@
 <?php
-namespace Lead\Sql\Spec\Suite\Statement\Sqlite;
+namespace Lead\Sql\Dialect\Spec\Suite\Statement\Sqlite;
 
-use Lead\Sql\SqlException;
-use Lead\Sql\Dialect\Sqlite;
+use Lead\Sql\Dialect\SqlException;
+use Lead\Sql\Dialect\Dialect\Sqlite;
 
 describe("Sqlite Dialect", function() {
 

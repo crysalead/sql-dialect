@@ -1,13 +1,13 @@
 <?php
-namespace Lead\Sql\Spec\Suite;
+namespace Lead\Sql\Dialect\Spec\Suite;
 
-use Lead\Sql\SqlException;
-use Lead\Sql\Statement;
+use Lead\Sql\Dialect\SqlException;
+use Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\Statement\Behavior\HasFlags;
-use Lead\Sql\Statement\Behavior\HasWhere;
-use Lead\Sql\Statement\Behavior\HasOrder;
-use Lead\Sql\Statement\Behavior\HasLimit;
+use Lead\Sql\Dialect\Statement\Behavior\HasFlags;
+use Lead\Sql\Dialect\Statement\Behavior\HasWhere;
+use Lead\Sql\Dialect\Statement\Behavior\HasOrder;
+use Lead\Sql\Dialect\Statement\Behavior\HasLimit;
 
 use Kahlan\Plugin\Double;
 

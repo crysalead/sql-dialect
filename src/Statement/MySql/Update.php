@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\MySql;
+namespace Lead\Sql\Dialect\Statement\MySql;
 
 /**
  * `UPDATE` statement.
  */
-class Update extends \Lead\Sql\Statement\Update
+class Update extends \Lead\Sql\Dialect\Statement\Update
 {
     /**
      * Sets `LOW_PRIORITY` flag.

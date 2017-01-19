@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\MySql;
+namespace Lead\Sql\Dialect\Statement\MySql;
 
 /**
  * `SELECT` statement.
  */
-class Select extends \Lead\Sql\Statement\Select
+class Select extends \Lead\Sql\Dialect\Statement\Select
 {
     /**
      * Sets `SQL_CALC_FOUND_ROWS` flag.

@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\Sqlite;
+namespace Lead\Sql\Dialect\Statement\Sqlite;
 
 /**
  * `UPDATE` statement.
  */
-class Update extends \Lead\Sql\Statement\Update
+class Update extends \Lead\Sql\Dialect\Statement\Update
 {
     /**
      * Sets `OR ABORT` flag.

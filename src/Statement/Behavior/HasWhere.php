@@ -1,5 +1,5 @@
 <?php
-namespace Lead\Sql\Statement\Behavior;
+namespace Lead\Sql\Dialect\Statement\Behavior;
 
 trait HasWhere
 {

@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Dialect;
+namespace Lead\Sql\Dialect\Dialect;
 
 use Lead\Set\Set;
 
 /**
  * Sqlite dialect.
  */
-class Sqlite extends \Lead\Sql\Dialect
+class Sqlite extends \Lead\Sql\Dialect\Dialect
 {
     /**
      * Escape identifier character.
@@ -53,12 +53,12 @@ class Sqlite extends \Lead\Sql\Dialect
     {
         $defaults = [
             'classes' => [
-                'select'       => 'Lead\Sql\Statement\Sqlite\Select',
-                'insert'       => 'Lead\Sql\Statement\Sqlite\Insert',
-                'update'       => 'Lead\Sql\Statement\Sqlite\Update',
-                'delete'       => 'Lead\Sql\Statement\Sqlite\Delete',
-                'create table' => 'Lead\Sql\Statement\CreateTable',
-                'drop table'   => 'Lead\Sql\Statement\DropTable'
+                'select'       => 'Lead\Sql\Dialect\Statement\Sqlite\Select',
+                'insert'       => 'Lead\Sql\Dialect\Statement\Sqlite\Insert',
+                'update'       => 'Lead\Sql\Dialect\Statement\Sqlite\Update',
+                'delete'       => 'Lead\Sql\Dialect\Statement\Sqlite\Delete',
+                'create table' => 'Lead\Sql\Dialect\Statement\CreateTable',
+                'drop table'   => 'Lead\Sql\Dialect\Statement\DropTable'
             ],
             'operators' => [
                 // Algebraic operations

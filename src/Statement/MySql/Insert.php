@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\MySql;
+namespace Lead\Sql\Dialect\Statement\MySql;
 
 /**
  * `INSERT` statement.
  */
-class Insert extends \Lead\Sql\Statement\Insert
+class Insert extends \Lead\Sql\Dialect\Statement\Insert
 {
     /**
      * Sets `HIGH_PRIORITY` flag.

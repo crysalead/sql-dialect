@@ -1,7 +1,5 @@
 <?php
-namespace Lead\Sql;
-
-use Lead\Sql\SqlException;
+namespace Lead\Sql\Dialect;
 
 /**
  * Statement

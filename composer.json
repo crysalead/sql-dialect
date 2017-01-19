@@ -1,5 +1,5 @@
 {
-    "name": "crysalead/sql",
+    "name": "crysalead/sql-dialect",
     "description": "SQL query builder.",
     "keywords": ["SQL", "Database", "Query", "MySQL", "PostgreSQL"],
     "license": "MIT",
@@ -13,12 +13,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Lead\\Sql\\": "src/"
+            "Lead\\Sql\\Dialect\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Lead\\Sql\\Spec\\": "spec/"
+            "Lead\\Sql\\Dialect\\Spec\\": "spec/"
         }
     },
     "config": {

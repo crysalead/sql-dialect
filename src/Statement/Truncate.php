@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Statement;
+namespace Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\SqlException;
+use Lead\Sql\Dialect\SqlException;
 
 /**
  * `TRUNCATE` statement.
  */
-class Truncate extends \Lead\Sql\Statement
+class Truncate extends \Lead\Sql\Dialect\Statement
 {
     /**
      * The SQL parts.

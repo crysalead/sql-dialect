@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Statement;
+namespace Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\SqlException;
+use Lead\Sql\Dialect\SqlException;
 
 /**
  * `DROP TABLE` statement.
  */
-class DropTable extends \Lead\Sql\Statement
+class DropTable extends \Lead\Sql\Dialect\Statement
 {
     /**
      * The SQL parts.

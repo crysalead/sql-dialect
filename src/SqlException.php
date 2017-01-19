@@ -1,5 +1,5 @@
 <?php
-namespace Lead\Sql;
+namespace Lead\Sql\Dialect;
 
 /**
  * The `SqlException` is thrown when a SQL operation returns an exception.

@@ -1,13 +1,13 @@
 <?php
-namespace Lead\Sql\Statement;
+namespace Lead\Sql\Dialect\Statement;
 
-use Lead\Sql\SqlException;
-use Lead\Sql\Statement\Behavior\HasFlags;
+use Lead\Sql\Dialect\SqlException;
+use Lead\Sql\Dialect\Statement\Behavior\HasFlags;
 
 /**
  * INSERT statement.
  */
-class Insert extends \Lead\Sql\Statement
+class Insert extends \Lead\Sql\Dialect\Statement
 {
     use HasFlags;
 

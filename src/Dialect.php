@@ -1,10 +1,8 @@
 <?php
-namespace Lead\Sql;
+namespace Lead\Sql\Dialect;
 
-use stdClass;
 use Lead\Set\Set;
 use Lead\Text\Text;
-use Lead\Sql\SqlException;
 
 /**
  * ANSI SQL dialect
@@ -90,13 +88,13 @@ class Dialect
     {
         $defaults = [
             'classes' => [
-                'select'       => 'Lead\Sql\Statement\Select',
-                'insert'       => 'Lead\Sql\Statement\Insert',
-                'update'       => 'Lead\Sql\Statement\Update',
-                'delete'       => 'Lead\Sql\Statement\Delete',
-                'truncate'     => 'Lead\Sql\Statement\Truncate',
-                'create table' => 'Lead\Sql\Statement\CreateTable',
-                'drop table'   => 'Lead\Sql\Statement\DropTable'
+                'select'       => 'Lead\Sql\Dialect\Statement\Select',
+                'insert'       => 'Lead\Sql\Dialect\Statement\Insert',
+                'update'       => 'Lead\Sql\Dialect\Statement\Update',
+                'delete'       => 'Lead\Sql\Dialect\Statement\Delete',
+                'truncate'     => 'Lead\Sql\Dialect\Statement\Truncate',
+                'create table' => 'Lead\Sql\Dialect\Statement\CreateTable',
+                'drop table'   => 'Lead\Sql\Dialect\Statement\DropTable'
             ],
             'quoter' => null,
             'caster' => null,

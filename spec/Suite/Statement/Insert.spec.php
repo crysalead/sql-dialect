@@ -1,8 +1,8 @@
 <?php
-namespace Lead\Sql\Spec\Suite\Statement;
+namespace Lead\Sql\Dialect\Spec\Suite\Statement;
 
-use Lead\Sql\SqlException;
-use Lead\Sql\Dialect;
+use Lead\Sql\Dialect\SqlException;
+use Lead\Sql\Dialect\Dialect;
 
 use Kahlan\Plugin\Stub;
 

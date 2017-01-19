@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\PostgreSql;
+namespace Lead\Sql\Dialect\Statement\PostgreSql;
 
 /**
  * `UPDATE` statement.
  */
-class Update extends \Lead\Sql\Statement\Update
+class Update extends \Lead\Sql\Dialect\Statement\Update
 {
     /**
      * Sets some fields to the `RETURNING` clause.

@@ -1,12 +1,12 @@
 <?php
-namespace Lead\Sql\Dialect;
+namespace Lead\Sql\Dialect\Dialect;
 
 use Lead\Set\Set;
 
 /**
  * PostgreSQL dialect.
  */
-class PostgreSql extends \Lead\Sql\Dialect
+class PostgreSql extends \Lead\Sql\Dialect\Dialect
 {
     /**
      * Escape identifier character.
@@ -53,12 +53,12 @@ class PostgreSql extends \Lead\Sql\Dialect
     {
         $defaults = [
             'classes' => [
-                'select'       => 'Lead\Sql\Statement\PostgreSql\Select',
-                'insert'       => 'Lead\Sql\Statement\PostgreSql\Insert',
-                'update'       => 'Lead\Sql\Statement\PostgreSql\Update',
-                'delete'       => 'Lead\Sql\Statement\PostgreSql\Delete',
-                'create table' => 'Lead\Sql\Statement\CreateTable',
-                'drop table'   => 'Lead\Sql\Statement\DropTable'
+                'select'       => 'Lead\Sql\Dialect\Statement\PostgreSql\Select',
+                'insert'       => 'Lead\Sql\Dialect\Statement\PostgreSql\Insert',
+                'update'       => 'Lead\Sql\Dialect\Statement\PostgreSql\Update',
+                'delete'       => 'Lead\Sql\Dialect\Statement\PostgreSql\Delete',
+                'create table' => 'Lead\Sql\Dialect\Statement\CreateTable',
+                'drop table'   => 'Lead\Sql\Dialect\Statement\DropTable'
             ],
             'operators' => [
                 ':regexp'         => ['format' => '%s ~ %s'],

@@ -1,7 +1,7 @@
 <?php
-namespace Lead\Sql\Spec\Suite\Statement\MySql;
+namespace Lead\Sql\Dialect\Spec\Suite\Statement\MySql;
 
-use Lead\Sql\Dialect\MySql;
+use Lead\Sql\Dialect\Dialect\MySql;
 
 describe("MySql Select", function() {
 

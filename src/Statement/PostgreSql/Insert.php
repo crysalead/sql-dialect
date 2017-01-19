@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\PostgreSql;
+namespace Lead\Sql\Dialect\Statement\PostgreSql;
 
 /**
  * `INSERT` statement.
  */
-class Insert extends \Lead\Sql\Statement\Insert
+class Insert extends \Lead\Sql\Dialect\Statement\Insert
 {
     /**
      * Sets some fields to the `RETURNING` clause.

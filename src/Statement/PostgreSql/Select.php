@@ -1,9 +1,9 @@
 <?php
-namespace Lead\Sql\Statement\PostgreSql;
+namespace Lead\Sql\Dialect\Statement\PostgreSql;
 
 /**
  * `SELECT` statement.
  */
-class Select extends \Lead\Sql\Statement\Select
+class Select extends \Lead\Sql\Dialect\Statement\Select
 {
 }

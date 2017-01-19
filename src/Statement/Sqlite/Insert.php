@@ -1,10 +1,10 @@
 <?php
-namespace Lead\Sql\Statement\Sqlite;
+namespace Lead\Sql\Dialect\Statement\Sqlite;
 
 /**
  * `INSERT` statement.
  */
-class Insert extends \Lead\Sql\Statement\Insert
+class Insert extends \Lead\Sql\Dialect\Statement\Insert
 {
     /**
      * Sets `OR ABORT` flag.

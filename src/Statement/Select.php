@@ -157,17 +157,17 @@ class Select extends \Lead\Sql\Dialect\Statement
      *
      * @return string The generated SQL string.
      */
-    public function toString($schemas = [])
+    public function toString($schemas = [], $aliases = [])
     {
         $fields = $this->dialect()->names($this->_parts['fields']);
         $sql = 'SELECT' .
             $this->_buildFlags($this->_parts['flags']) .
             $this->_buildChunk($fields ?: '*') .
             $this->_buildClause('FROM', $this->dialect()->names($this->_parts['from'])) .
-            $this->_buildJoins() .
-            $this->_buildClause('WHERE', $this->dialect()->conditions($this->_parts['where'], compact('schemas'))) .
+            $this->_buildJoins($schemas, $aliases) .
+            $this->_buildClause('WHERE', $this->dialect()->conditions($this->_parts['where'], compact('schemas', 'aliases'))) .
             $this->_buildClause('GROUP BY', $this->_group()) .
-            $this->_buildClause('HAVING', $this->dialect()->conditions($this->_parts['having'], compact('schemas'))) .
+            $this->_buildClause('HAVING', $this->dialect()->conditions($this->_parts['having'], compact('schemas', 'aliases'))) .
             $this->_buildOrder() .
             $this->_buildClause('LIMIT', $this->_parts['limit']) .
             $this->_buildFlag('FOR UPDATE', $this->_parts['forUpdate']);
@@ -194,7 +194,7 @@ class Select extends \Lead\Sql\Dialect\Statement
      *
      * @return string The `JOIN` clause.
      */
-    protected function _buildJoins()
+    protected function _buildJoins($schemas, $aliases)
     {
         $joins = [];
         foreach ($this->_parts['joins'] as $value) {
@@ -202,11 +202,11 @@ class Select extends \Lead\Sql\Dialect\Statement
             $on = $value['on'];
             $type = $value['type'];
             $join = [strtoupper($type), 'JOIN'];
-            $join[] = $this->dialect()->name($table, true);
+            $join[] = $this->dialect()->name($table);
 
             if ($on) {
                 $join[] = 'ON';
-                $join[] = $this->dialect()->conditions($on);
+                $join[] = $this->dialect()->conditions($on, compact('schemas', 'aliases'));
             }
 
             $joins[] = join(' ', $join);

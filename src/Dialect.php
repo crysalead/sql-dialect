@@ -213,7 +213,7 @@ class Dialect
         return [
             ':name' => function ($value, &$states) {
                 list($alias, $field) = $this->undot($value);
-                $escaped = $this->name($value);
+                $escaped = $this->name($value, $states['aliases']);
                 $schema = isset($states['schemas'][$alias]) ? $states['schemas'][$alias] : null;
                 $states['name'] = $field;
                 $states['schema'] = $schema;
@@ -371,12 +371,13 @@ class Dialect
     /**
      * Generates a list of escaped table/field names identifier.
      *
-     * @param  array  $fields The fields to format.
-     * @return string         The formatted fields.
+     * @param  array  $fields  The fields to format.
+     * @param  array  $aliases An aliases map.
+     * @return string          The formatted fields.
      */
-    public function names($fields)
+    public function names($fields, $aliases = [])
     {
-        return (string) join(", ", $this->escapes($fields, ''));
+        return (string) join(", ", $this->escapes($fields, '', $aliases));
     }
 
     /**
@@ -384,11 +385,12 @@ class Dialect
      *
      * Note: it ignores duplicates.
      *
-     * @param  string|array $names  A name or an array of names to escapes.
-     * @param  string       $prefix An optionnal table/alias prefix to use.
-     * @return array                An array of escaped fields.
+     * @param  string|array $names   A name or an array of names to escapes.
+     * @param  string       $prefix  An optionnal table/alias prefix to use.
+     * @param  array        $aliases An aliases map.
+     * @return array                 An array of escaped fields.
      */
-    public function escapes($names, $prefix)
+    public function escapes($names, $prefix, $aliases = [])
     {
         $names = is_array($names) ? $names : [$names];
         $sql = [];
@@ -397,11 +399,11 @@ class Dialect
                 $sql[] = $this->conditions($names);
             } elseif (is_string($value)) {
                 if (!is_numeric($key)) {
-                    $name = $this->name($key);
+                    $name = $this->name($key, $aliases);
                     $value = $this->name($value);
                     $name = $name !== $value ? "{$name} AS {$value}" : $name;
                 } else {
-                    $name = $this->name($value);
+                    $name = $this->name($value, $aliases);
                 }
                 $name = $prefix ? "{$prefix}.{$name}" : $name;
                 $sql[$name] = $name;
@@ -410,9 +412,9 @@ class Dialect
             } else {
                 $pfx = $prefix;
                 if (!is_numeric($key)) {
-                    $pfx = $this->escape($key);
+                    $pfx = $this->escape(isset($aliases[$key]) ? $aliases[$key] : $key);
                 }
-                $sql = array_merge($sql, $this->escapes($value, $pfx));
+                $sql = array_merge($sql, $this->escapes($value, $pfx, $aliases));
             }
         }
         return $sql;
@@ -489,6 +491,7 @@ class Dialect
             'prepend' => false,
             'operator' => ':and',
             'schemas' => [],
+            'aliases' => [],
             'schema' => null,
             'name' => null,
         ];
@@ -589,7 +592,7 @@ class Dialect
     protected function _name($name, $value, $states)
     {
         list($alias, $field) = $this->undot($name);
-        $escaped = $this->name($name);
+        $escaped = $this->name($name, $states['aliases']);
         $schema = isset($states['schemas'][$alias]) ? $states['schemas'][$alias] : null;
         $states['name'] = $field;
         $states['schema'] = $schema;
@@ -621,6 +624,12 @@ class Dialect
      */
     public function format($operator, $value, &$states = [])
     {
+        $defaults = [
+            'schemas' => [],
+            'aliases' => [],
+            'schema' => null
+        ];
+        $states += $defaults;
         if (!isset($this->_formatters[$operator])) {
             throw new SqlException("Unexisting formatter `'{$operator}'`.");
         }
@@ -631,15 +640,19 @@ class Dialect
     /**
      * Escapes a column/table/schema with dotted syntax support.
      *
-     * @param  string $name The identifier name.
-     * @return string       The escaped identifier.
+     * @param  string $name    The identifier name.
+     * @param  array  $aliases An aliases map.
+     * @return string          The escaped identifier.
      */
-    public function name($name)
+    public function name($name, $aliases = [])
     {
         if (!is_string($name)) {
-            return $this->names($name);
+            return $this->names($name, $aliases);
         }
         list($alias, $field) = $this->undot($name);
+        if (isset($aliases[$alias])) {
+            $alias = $aliases[$alias];
+        }
         return $alias ? $this->escape($alias) . '.' . $this->escape($field) : $this->escape($name);
     }
 

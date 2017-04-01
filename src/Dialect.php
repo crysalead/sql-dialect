@@ -609,7 +609,7 @@ class Dialect
         }
 
         $conditions = current($value);
-        $conditions = (array) $conditions;
+        $conditions = is_array($conditions) ? $conditions : [$conditions];
         array_unshift($conditions, [':name' => $name]);
         return $this->_operator($operator, $conditions, $states);
     }

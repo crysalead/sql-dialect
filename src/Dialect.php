@@ -333,10 +333,12 @@ class Dialect
         if (!isset($field['name'])) {
             throw new SqlException("Missing column name.");
         }
-        if (isset($field['type'])) {
-            $field += $this->type($field['type']);
-        } elseif (!isset($field['use'])) {
-            $field += $this->type('string');
+        if (!isset($field['use'])) {
+            if (isset($field['type'])) {
+                $field += $this->type($field['type']);
+            } else {
+                $field += $this->type('string');
+            }
         }
         return $field + [
             'name'      => null,

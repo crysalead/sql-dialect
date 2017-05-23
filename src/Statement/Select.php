@@ -1,6 +1,7 @@
 <?php
 namespace Lead\Sql\Dialect\Statement;
 
+use Lead\Set\Set;
 use Lead\Sql\Dialect\SqlException;
 use Lead\Sql\Dialect\Statement\Behavior\HasFlags;
 use Lead\Sql\Dialect\Statement\Behavior\HasWhere;
@@ -58,7 +59,7 @@ class Select extends \Lead\Sql\Dialect\Statement
     public function fields($fields)
     {
         $fields = is_array($fields) && func_num_args() === 1 ? $fields : func_get_args();
-        $this->_parts['fields'] = array_merge($this->_parts['fields'], $fields);
+        $this->_parts['fields'] = Set::merge($this->_parts['fields'], $fields);
         return $this;
     }
 

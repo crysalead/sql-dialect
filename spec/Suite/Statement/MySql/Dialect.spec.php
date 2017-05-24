@@ -342,11 +342,11 @@ describe("MySql Dialect", function() {
 
                 $data = [
                     'name' => 'fieldname',
-                    'type' => 'text',
+                    'type' => 'string',
                     'default' => 'value'
                 ];
                 $result = $this->dialect->column($data);
-                expect($result)->toBe('`fieldname` text DEFAULT \'value\'');
+                expect($result)->toBe('`fieldname` varchar(255) DEFAULT \'value\'');
 
             });
 
@@ -360,6 +360,26 @@ describe("MySql Dialect", function() {
                 ];
                 $result = $this->dialect->column($data);
                 expect($result)->toBe('`fieldname` float(10) NULL');
+
+            });
+
+            it("ignores default for BLOB/TEXT", function() {
+
+                $data = [
+                    'name' => 'fieldname',
+                    'use' => 'text',
+                    'default' => 'value'
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`fieldname` text');
+
+                $data = [
+                    'name' => 'fieldname',
+                    'use' => 'blob',
+                    'default' => 'value'
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`fieldname` blob');
 
             });
 

@@ -155,7 +155,7 @@ class MySql extends \Lead\Sql\Dialect\Dialect
             $result[] = 'NOT NULL AUTO_INCREMENT';
         } else {
             $result[] = is_bool($null) ? ($null ? 'NULL' : 'NOT NULL') : '' ;
-            if ($default !== null) {
+            if ($default !== null && !in_array(strtolower($use), ['text', 'blob'], true)) {
                 if (is_array($default)) {
                     list($operator, $default) = each($default);
                 } else {

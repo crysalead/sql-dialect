@@ -26,16 +26,17 @@ class Select extends \Lead\Sql\Dialect\Statement
      * @var string
      */
     protected $_parts = [
-        'flags'     => [],
-        'fields'    => [],
-        'from'      => [],
-        'joins'     => [],
-        'where'     => [],
-        'group'     => [],
-        'having'    => [],
-        'order'     => [],
-        'limit'     => '',
-        'forUpdate' => false
+        'flags'  => [],
+        'fields' => [],
+        'from'   => [],
+        'joins'  => [],
+        'where'  => [],
+        'group'  => [],
+        'having' => [],
+        'order'  => [],
+        'limit'  => '',
+        'lock'   => false,
+        'noWait' => false
     ];
 
     /**
@@ -126,14 +127,25 @@ class Select extends \Lead\Sql\Dialect\Statement
     }
 
     /**
-     * Sets `FOR UPDATE` mode.
+     * Set the lock mode.
      *
-     * @param  boolean $forUpdate The `FOR UPDATE` value.
-     * @return object             Returns `$this`.
+     * @param  boolean $mode The lock mode.
+     * @return object        Returns `$this`.
      */
-    public function forUpdate($forUpdate = true)
+    public function lock($lock = 'update')
     {
-        $this->_parts['forUpdate'] = $forUpdate;
+        return $this;
+    }
+
+    /**
+     * Sets `NOWAIT` mode.
+     *
+     * @param  boolean $noWait The `NOWAIT` mode.
+     * @return object          Returns `$this`.
+     */
+    public function noWait($noWait = true)
+    {
+        $this->_parts['noWait'] = $noWait;
         return $this;
     }
 
@@ -170,8 +182,12 @@ class Select extends \Lead\Sql\Dialect\Statement
             $this->_buildClause('GROUP BY', $this->_group()) .
             $this->_buildClause('HAVING', $this->dialect()->conditions($this->_parts['having'], compact('schemas', 'aliases'))) .
             $this->_buildOrder() .
-            $this->_buildClause('LIMIT', $this->_parts['limit']) .
-            $this->_buildFlag('FOR UPDATE', $this->_parts['forUpdate']);
+            $this->_buildClause('LIMIT', $this->_parts['limit']);
+
+        if ($this->_parts['lock']) {
+            $sql .= $this->_buildFlag($this->_parts['lock'], $this->_parts['lock']) .
+                    $this->_buildFlag('NOWAIT', $this->_parts['noWait']);
+        }
 
         return $this->_alias ? "({$sql}) AS " . $this->dialect()->name($this->_alias) : $sql;
     }

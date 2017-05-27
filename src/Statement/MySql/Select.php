@@ -1,11 +1,39 @@
 <?php
 namespace Lead\Sql\Dialect\Statement\MySql;
 
+use Lead\Sql\Dialect\SqlException;
+
 /**
  * `SELECT` statement.
  */
 class Select extends \Lead\Sql\Dialect\Statement\Select
 {
+    /**
+     * Set the lock mode.
+     *
+     * @param  boolean $mode The lock mode.
+     * @return object        Returns `$this`.
+     */
+    public function lock($mode = 'update')
+    {
+        switch (strtolower($mode)) {
+            case 'update':
+                $lock = 'FOR UPDATE';
+                break;
+            case 'share':
+                $lock = 'LOCK IN SHARE MODE';
+                break;
+            case false:
+                $lock = false;
+                break;
+            default:
+                throw new SqlException("Invalid MySQL lock mode `'{$mode}'`.");
+                break;
+        }
+        $this->_parts['lock'] = $lock;
+        return $this;
+    }
+
     /**
      * Sets `SQL_CALC_FOUND_ROWS` flag.
      *

@@ -1,6 +1,7 @@
 <?php
 namespace Lead\Sql\Dialect\Spec\Suite\Statement\MySql;
 
+use Lead\Sql\Dialect\SqlException;
 use Lead\Sql\Dialect\Dialect\MySql;
 
 describe("MySql Select", function() {
@@ -8,6 +9,53 @@ describe("MySql Select", function() {
     beforeEach(function() {
         $this->dialect = new MySql();
         $this->select = $this->dialect->statement('select');
+    });
+
+    describe("->lock()", function() {
+
+        it("sets the `FOR UPDATE` flag", function() {
+
+            $this->select->from('table')
+                ->lock('update')
+                ->fields('firstname');
+            expect($this->select->toString())->toBe('SELECT `firstname` FROM `table` FOR UPDATE');
+
+        });
+
+        it("sets the `LOCK IN SHARE MODE", function() {
+
+            $this->select->from('table')
+                ->lock('share')
+                ->fields('firstname');
+            expect($this->select->toString())->toBe('SELECT `firstname` FROM `table` LOCK IN SHARE MODE');
+
+        });
+
+        it("throws an `SQLException` for invalid lock mode", function() {
+
+            $closure = function() {
+                $this->select->from('table')
+                    ->lock('invalid')
+                    ->fields('firstname');
+            };
+            expect($closure)->toThrow(new SqlException("Invalid MySQL lock mode `'invalid'`."));
+
+        });
+
+    });
+
+    describe("->noWait()", function() {
+
+        it("set the `NOWAIT` flag", function() {
+
+            $this->select->from('table')
+                ->lock('update')
+                ->noWait()
+                ->fields('firstname');
+            expect($this->select->toString())->toBe('SELECT `firstname` FROM `table` FOR UPDATE NOWAIT');
+
+        });
+
     });
 
     describe("->calcFoundRows()", function() {

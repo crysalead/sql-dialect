@@ -754,7 +754,7 @@ class Dialect
     {
         $field = $this->field($field);
 
-        $isNumeric = preg_match('/^(integer|float|boolean)$/', $field['type']);
+        $isNumeric = preg_match('/^(integer|float|boolean)$/', (string) $field['type']);
         if ($isNumeric && $field['default'] === '') {
             $field['null'] = true;
             $field['default'] = null;

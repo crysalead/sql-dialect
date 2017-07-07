@@ -52,11 +52,11 @@ trait HasOrder
      *
      * @return string The `ORDER BY` clause.
      */
-    protected function _buildOrder()
+    protected function _buildOrder($aliases = [])
     {
         $result = [];
         foreach ($this->_parts['order'] as $column => $dir) {
-            $column = $this->dialect()->name($column);
+            $column = $this->dialect()->name($column, $aliases);
             $result[] = "{$column} {$dir}";
         }
         return $this->_buildClause('ORDER BY', join(', ', $result));

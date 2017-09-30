@@ -204,7 +204,7 @@ describe("PostgreSql CreateTable", function() {
 
         });
 
-        it("sets a `UNIQUE` constraint", function() {
+        it("sets a multi key `UNIQUE` constraint", function() {
 
              $this->create->table('table1')
                 ->columns([

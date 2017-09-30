@@ -596,7 +596,7 @@ describe("Dialect", function() {
 
         context("with conditions", function() {
 
-            it("prefixes field names", function() {
+            it("builds a condition", function() {
 
                 $part = $this->dialect->conditions($this->dialect->prefix([
                     'value1',

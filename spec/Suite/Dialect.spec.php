@@ -502,13 +502,14 @@ describe("Dialect", function() {
 
             $logs = [];
 
-            $defaultSchema = function(){};
-            $table1Schema = function(){};
-            $table2Schema = function(){};
+            $defaultSchema = function($value) { return $value; };
+            $table1Schema = function($value) { return (integer) $value - 2; };
+            $table2Schema = function($value) { return (integer) $value + 2; };
 
             $caster = function($value, $states) use (&$logs) {
-              $logs[] = $states;
-              return $value;
+                $logs[] = $states;
+                $schema = $states['schema'] ?: function($value) { return $value; };
+                return $schema($value);
             };
 
             $this->dialect->caster($caster);
@@ -519,21 +520,27 @@ describe("Dialect", function() {
                 ]],
                 [':or' => [
                     ['<' => [
-                        [':name' => 'Table1.min'], 123
+                        [':name' => 'table1.min'], 123
                     ]],
                     ['>' => [
-                        [':name' => 'Table2.max'], 456
+                        [':name' => 'table2.max'], 456
                     ]]
                 ]],
                 ['!=' => [
                     [':name' => 'value'], 0
                 ]]
-            ], [ 'schemas' => [
-                '' => $defaultSchema,
-                'Table1' => $table1Schema,
-                'Table2' => $table2Schema
-            ]]);
-            expect($result)->toBe('"value" != 789 AND "Table1"."min" < 123 OR "Table2"."max" > 456 AND "value" != 0');
+            ], [
+                'schemas' => [
+                    '' => $defaultSchema,
+                    'Table1' => $table1Schema,
+                    'Table2' => $table2Schema
+                ],
+                'aliases' => [
+                    'table1' => 'Table1',
+                    'table2' => 'Table2'
+                ]
+            ]);
+            expect($result)->toBe('"value" != 789 AND "Table1"."min" < 121 OR "Table2"."max" > 458 AND "value" != 0');
 
             expect(count($logs))->toBe(4);
             expect($logs[0]['schema'])->toBe($defaultSchema);

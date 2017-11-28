@@ -213,6 +213,9 @@ class Dialect
         return [
             ':name' => function ($value, &$states) {
                 list($alias, $field) = $this->undot($value);
+                if (isset($states['aliases'][$alias])) {
+                    $alias = $states['aliases'][$alias];
+                }
                 $escaped = $this->name($value, $states['aliases']);
                 $schema = isset($states['schemas'][$alias]) ? $states['schemas'][$alias] : null;
                 $states['name'] = $field;

@@ -157,7 +157,8 @@ class MySql extends \Lead\Sql\Dialect\Dialect
             $result[] = is_bool($null) ? ($null ? 'NULL' : 'NOT NULL') : '' ;
             if ($default !== null && !in_array(strtolower($use), ['text', 'blob'], true)) {
                 if (is_array($default)) {
-                    list($operator, $default) = each($default);
+                    $operator = key($default);
+                    $default = current($default);
                 } else {
                     $operator = ':value';
                 }

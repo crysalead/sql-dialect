@@ -57,6 +57,7 @@ class Sqlite extends \Lead\Sql\Dialect\Dialect
                 'insert'       => 'Lead\Sql\Dialect\Statement\Sqlite\Insert',
                 'update'       => 'Lead\Sql\Dialect\Statement\Sqlite\Update',
                 'delete'       => 'Lead\Sql\Dialect\Statement\Sqlite\Delete',
+                'truncate'     => 'Lead\Sql\Dialect\Statement\Sqlite\Truncate',
                 'create table' => 'Lead\Sql\Dialect\Statement\CreateTable',
                 'drop table'   => 'Lead\Sql\Dialect\Statement\DropTable'
             ],

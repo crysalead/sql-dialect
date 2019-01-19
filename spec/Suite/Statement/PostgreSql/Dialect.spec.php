@@ -141,7 +141,7 @@ describe("PostgreSql Dialect", function() {
                     'column' => 'id'
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE ("id")');
+                expect($result)->toBe('CONSTRAINT "id" UNIQUE ("id")');
 
             });
 
@@ -151,7 +151,7 @@ describe("PostgreSql Dialect", function() {
                     'column' => ['id', 'name']
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE ("id", "name")');
+                expect($result)->toBe('CONSTRAINT "id_name" UNIQUE ("id", "name")');
 
             });
 

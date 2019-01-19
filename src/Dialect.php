@@ -871,6 +871,7 @@ class Dialect
                 case 'primaryKey':
                 case 'foreignKey':
                     $data[$name] = join(', ', array_map([$this, 'name'], (array) $value));
+                    $data['name'] = $this->name(join('_', (array) $value));
                 break;
             }
         }

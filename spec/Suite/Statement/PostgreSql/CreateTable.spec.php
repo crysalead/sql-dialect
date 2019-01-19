@@ -199,7 +199,7 @@ describe("PostgreSql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => 'email']);
 
-            $expected  = 'CREATE TABLE "table1" ("email" varchar(255), UNIQUE ("email"))';
+            $expected  = 'CREATE TABLE "table1" ("email" varchar(255), CONSTRAINT "email" UNIQUE ("email"))';
             expect($this->create->toString())->toBe($expected);
 
         });
@@ -213,7 +213,7 @@ describe("PostgreSql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => ['firstname', 'lastname']]);
 
-            $expected  = 'CREATE TABLE "table1" ("firstname" varchar(255), "lastname" varchar(255), UNIQUE ("firstname", "lastname"))';
+            $expected  = 'CREATE TABLE "table1" ("firstname" varchar(255), "lastname" varchar(255), CONSTRAINT "firstname_lastname" UNIQUE ("firstname", "lastname"))';
             expect($this->create->toString())->toBe($expected);
 
         });

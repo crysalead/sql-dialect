@@ -203,7 +203,7 @@ describe("MySql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => 'email']);
 
-            $expected  = 'CREATE TABLE `table1` (`email` varchar(255), UNIQUE (`email`))';
+            $expected  = 'CREATE TABLE `table1` (`email` varchar(255), UNIQUE `email` (`email`))';
             expect($this->create->toString())->toBe($expected);
 
         });
@@ -217,7 +217,7 @@ describe("MySql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => ['firstname', 'lastname']]);
 
-            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE (`firstname`, `lastname`))';
+            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE `firstname_lastname` (`firstname`, `lastname`))';
             expect($this->create->toString())->toBe($expected);
 
         });
@@ -231,7 +231,7 @@ describe("MySql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => ['firstname', 'lastname'], 'index' => true ]);
 
-            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE INDEX (`firstname`, `lastname`))';
+            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE INDEX `firstname_lastname` (`firstname`, `lastname`))';
             expect($this->create->toString())->toBe($expected);
 
         });
@@ -245,7 +245,7 @@ describe("MySql CreateTable", function() {
                 ])
                 ->constraint(['type' => 'unique', 'column' => ['firstname', 'lastname'], 'index' => true, 'key' => true ]);
 
-            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE KEY (`firstname`, `lastname`))';
+            $expected  = 'CREATE TABLE `table1` (`firstname` varchar(255), `lastname` varchar(255), UNIQUE KEY `firstname_lastname` (`firstname`, `lastname`))';
             expect($this->create->toString())->toBe($expected);
 
         });

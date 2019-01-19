@@ -157,7 +157,7 @@ describe("MySql Dialect", function() {
                     'column' => 'id'
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE (`id`)');
+                expect($result)->toBe('UNIQUE `id` (`id`)');
 
             });
 
@@ -167,7 +167,7 @@ describe("MySql Dialect", function() {
                     'column' => ['id', 'name']
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE (`id`, `name`)');
+                expect($result)->toBe('UNIQUE `id_name` (`id`, `name`)');
 
             });
 
@@ -177,7 +177,7 @@ describe("MySql Dialect", function() {
                     'column' => ['id', 'name'], 'index' => true
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE INDEX (`id`, `name`)');
+                expect($result)->toBe('UNIQUE INDEX `id_name` (`id`, `name`)');
 
             });
 
@@ -187,7 +187,7 @@ describe("MySql Dialect", function() {
                     'column' => ['id', 'name'], 'index' => true, 'key' => true
                 ];
                 $result = $this->dialect->constraint('unique', $data);
-                expect($result)->toBe('UNIQUE KEY (`id`, `name`)');
+                expect($result)->toBe('UNIQUE KEY `id_name` (`id`, `name`)');
 
             });
         });

@@ -554,7 +554,7 @@ class Dialect
      */
     public function isOperator($operator)
     {
-        return ($operator && $operator[0] === ':') || isset($this->_operators[$operator]);
+        return (is_string($operator) && $operator[0] === ':') || isset($this->_operators[$operator]);
     }
 
     /**

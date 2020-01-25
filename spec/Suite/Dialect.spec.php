@@ -52,6 +52,23 @@ describe("Dialect", function() {
 
     });
 
+    describe("->quote()", function() {
+
+        it("doesn't escape normal characters", function() {
+
+            expect($this->dialect->quote('abcdef0123456798%-'))->toBe('\'abcdef0123456798%-\'');
+
+        });
+
+        it("escapes special characters", function() {
+
+            expect($this->dialect->quote("\0\x08\x09\x1a\n\r\"'"))->toBe('\'\\x00\\x08\\t\\x1a\\n\\r\\"\\\'\'');
+
+        });
+
+    });
+
+
     describe("->caster()", function() {
 
         it("gets/sets a caster handler", function() {

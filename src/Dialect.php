@@ -718,8 +718,7 @@ class Dialect
             "\r"=>'\r',
             '"'=>'\\"',
             "'"=>"\'",
-            '\\'=>'\\\\',
-            '%'=>'\\%'
+            '\\'=>'\\\\'
         );
         return $delimiter . strtr($string, $replacements) . $delimiter;
     }

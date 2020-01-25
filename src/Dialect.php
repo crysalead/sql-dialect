@@ -697,25 +697,42 @@ class Dialect
         if ($quoter = $this->quoter()) {
             return $quoter($string);
         }
+        return $this->addSlashes($string, "'");
+    }
+
+    /**
+     * Add slashes to a string.
+     *
+     * @param  string $string    The string to add slashes.
+     * @param  string $delimiter The delimiter.
+     * @return string            The string with slashes.
+     */
+     public function addSlashes($string, $delimiter = '')
+     {
         $replacements = array(
             "\x00"=>'\x00',
+            "\x08"=>'\x08',
+            "\t"=>'\t',
+            "\x1a"=>'\x1a',
             "\n"=>'\n',
             "\r"=>'\r',
-            "\\"=>'\\\\',
+            '"'=>'\\"',
             "'"=>"\'",
-            "\x1a"=>'\x1a'
+            '\\'=>'\\\\',
+            '%'=>'\\%'
         );
-        return "'" . strtr(addcslashes($string, '%_'), $replacements) . "'";
+        return $delimiter . strtr($string, $replacements) . $delimiter;
     }
 
     /**
      * Converts a given value into the proper type based on a given schema definition.
      *
-     * @param  mixed $value  The value to be converted. Arrays will be recursively converted.
-     * @param  array $states The current states.
-     * @return mixed         The formatted value.
+     * @param  mixed   $value             The value to be converted. Arrays will be recursively converted.
+     * @param  array   $states            The current states.
+     * @param  boolean $doubleQuoteString Whether to double quote strings or not.
+     * @return mixed                      The formatted value.
      */
-    public function value($value, $states = [])
+    public function value($value, $states = [], $doubleQuoteString = false)
     {
         if ($caster = $this->caster()) {
             return $caster($value, $states);
@@ -726,21 +743,21 @@ class Dialect
             case is_bool($value):
                 return $value ? 'TRUE' : 'FALSE';
             case is_string($value):
-                return $this->quote($value);
+                return $doubleQuoteString ? preg_replace('~[\\\]~', '\\\\\\\\', $this->addSlashes($value, '"')) : $this->quote($value);
             case is_array($value):
-                $cast = function($value) use (&$cast) {
+                $cast = function($value) use (&$cast, $states) {
                     $result = [];
                     foreach ($value as $k => $v) {
                         if (is_array($v)) {
                             $result[] = $cast($v);
                         } else {
-                            $result[] = $this->value($v);
+                            $result[] = $this->value($v, $states, true);
                         }
                     }
                     return '{' . join(',', $result) . '}';
 
                 };
-                return $cast($value);
+                return "'" . $cast($value) . "'";
         }
         return (string) $value;
     }

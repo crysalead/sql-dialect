@@ -253,7 +253,8 @@ describe("Dialect", function() {
         expect($this->dialect->value(true))->toBe('TRUE');
         expect($this->dialect->value(false))->toBe('FALSE');
         expect($this->dialect->value('text'))->toBe("'text'");
-        expect($this->dialect->value([null, 'text', true]))->toBe("{NULL,'text',TRUE}");
+        expect($this->dialect->value([null, 'text', true]))->toBe('\'{NULL,"text",TRUE}\'');
+        expect($this->dialect->value(['\\', '"']))->toBe('\'{"\\\\\\\\","\\\\""}\'');
         expect($this->dialect->value(15.85))->toBe('15.85');
 
       });

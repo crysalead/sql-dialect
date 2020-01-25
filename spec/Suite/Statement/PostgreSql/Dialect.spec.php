@@ -53,7 +53,7 @@ describe("PostgreSql Dialect", function() {
             $part = $this->dialect->conditions([
                 'score' => [':value' => [1, 2, 3, 4, 5]]
             ]);
-            expect($part)->toBe('"score" = {1,2,3,4,5}');
+            expect($part)->toBe('"score" = \'{1,2,3,4,5}\'');
 
         });
 
@@ -62,7 +62,7 @@ describe("PostgreSql Dialect", function() {
             $part = $this->dialect->conditions([
                 'score' => [':value' => [1, [2, [3, [4, [5]]]]]]
             ]);
-            expect($part)->toBe('"score" = {1,{2,{3,{4,{5}}}}}');
+            expect($part)->toBe('"score" = \'{1,{2,{3,{4,{5}}}}}\'');
 
         });
 
@@ -74,7 +74,7 @@ describe("PostgreSql Dialect", function() {
                     [':value' => [1, 2, 3]]
                 ]
             ]);
-            expect($part)->toBe('{1,2,3} <> {1,2,3}');
+            expect($part)->toBe('\'{1,2,3}\' <> \'{1,2,3}\'');
 
         });
 

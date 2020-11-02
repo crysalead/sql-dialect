@@ -367,6 +367,22 @@ describe("MySql Dialect", function() {
 
                 $data = [
                     'name' => 'fieldname',
+                    'use' => 'longtext',
+                    'default' => 'value'
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`fieldname` longtext');
+
+                $data = [
+                    'name' => 'fieldname',
+                    'use' => 'mediumtext',
+                    'default' => 'value'
+                ];
+                $result = $this->dialect->column($data);
+                expect($result)->toBe('`fieldname` mediumtext');
+
+                $data = [
+                    'name' => 'fieldname',
                     'use' => 'text',
                     'default' => 'value'
                 ];

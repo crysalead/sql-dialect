@@ -1,7 +1,7 @@
 # SQl Dialect
 
 ![Build Status](https://img.shields.io/badge/branch-master-blue.svg)
-[![Build Status](https://travis-ci.org/crysalead/sql-dialect.png?branch=master)](https://travis-ci.org/crysalead/sql-dialect)
+[![Build Status](https://travis-ci.com/crysalead/sql-dialect.png?branch=master)](https://travis-ci.com/crysalead/sql-dialect)
 [![Scrutinizer Coverage Status](https://scrutinizer-ci.com/g/crysalead/sql-dialect/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/crysalead/sql-dialect/?branch=master)
 
 This library provides query builders independent of any particular database connection library.

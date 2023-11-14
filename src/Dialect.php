@@ -767,9 +767,10 @@ class Dialect
      * @param  array  $column A field array structured like the following:
      *                        `['name' => 'value', 'type' => 'value' [, options]]`, where options
      *                        can be `'default'`, `'null'`, `'length'` or `'precision'`.
+     * @param  array  $meta   The table meta data for charset & collation.
      * @return string         A SQL string formated column.
      */
-    public function column($field)
+    public function column($field, $meta = [])
     {
         $field = $this->field($field);
 
@@ -779,7 +780,7 @@ class Dialect
             $field['default'] = null;
         }
         $field['use'] = strtolower($field['use']);
-        return $this->_column($field);
+        return $this->_column($field, $meta);
     }
 
     /**

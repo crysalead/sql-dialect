@@ -332,7 +332,7 @@ describe("MySql CreateTable", function() {
         $expected .= ' `decimal` decimal(10,2),';
         $expected .= ' `integer` numeric(10,2),';
         $expected .= ' `date` date NOT NULL,';
-        $expected .= ' `text` text NOT NULL,';
+        $expected .= ' `text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,';
         $expected .= ' CHECK (`integer` < 10),';
         $expected .= ' FOREIGN KEY (`table_id`) REFERENCES `other_table` (`id`) ON DELETE NO ACTION,';
         $expected .= ' PRIMARY KEY (`id`))';

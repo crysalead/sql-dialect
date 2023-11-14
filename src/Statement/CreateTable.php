@@ -125,7 +125,7 @@ class CreateTable extends \Lead\Sql\Dialect\Statement
         return 'CREATE TABLE' .
             $this->_buildFlag('IF NOT EXISTS', $this->_parts['ifNotExists']) .
             $this->_buildChunk($this->dialect()->name($this->_parts['table'])) .
-            $this->_buildDefinition($this->_parts['columns'], $this->_parts['constraints']) .
+            $this->_buildDefinition($this->_parts['columns'], $this->_parts['constraints'], $this->_parts['meta']) .
             $this->_buildChunk($this->dialect()->meta('table', $this->_parts['meta']));
     }
 
@@ -136,7 +136,7 @@ class CreateTable extends \Lead\Sql\Dialect\Statement
      * @param  array  $constraints The columns constraints.
      * @return string              The SQL columns definition list.
      */
-    protected function _buildDefinition($columns, $constraints)
+    protected function _buildDefinition($columns, $constraints, $meta = [])
     {
         foreach ($columns as $name => $field) {
             $field['name'] = $name;
@@ -145,7 +145,7 @@ class CreateTable extends \Lead\Sql\Dialect\Statement
             if (!empty($field['serial'])) {
                 $primary = $name;
             }
-            $result[] = $this->dialect()->column($field);
+            $result[] = $this->dialect()->column($field, $meta);
         }
 
         foreach ($constraints as $constraint) {

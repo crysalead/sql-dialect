@@ -102,9 +102,10 @@ class Sqlite extends \Lead\Sql\Dialect\Dialect
      * @see    chaos\source\sql\Dialect::column()
      *
      * @param  array  $field A field array
+     * @param  array  $meta  The table meta data for charset & collation.
      * @return string        The SQL column string
      */
-    protected function _column($field)
+    protected function _column($field, $meta = [])
     {
         extract($field);
         if ($type === 'float' && $precision) {
@@ -112,6 +113,10 @@ class Sqlite extends \Lead\Sql\Dialect\Dialect
         }
 
         $column = $this->name($name) . ' ' . $this->_formatColumn($use, $length, $precision);
+
+        if (in_array(strtolower($use), ['text'], true)) {
+            $field += array_intersect_key($meta, array_flip(['collate']));
+        }
 
         $result = [$column];
         $result[] = $this->meta('column', $field, ['collate']);
